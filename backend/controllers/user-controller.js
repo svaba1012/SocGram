@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user-model");
 const HttpError = require("../models/httpError");
@@ -16,17 +18,50 @@ const signIn = async (req, res, next) => {
     return next(new HttpError("Can't connect to the database", 500));
   }
 
-  if (!user || user.password !== password) {
+  if (!user) {
     return next(new HttpError("Wrong password, email or username", 401));
   }
+
+  let isValidPassword;
+  try {
+    isValidPassword = await bcrypt.compare(password, user.password);
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("Failed creating new user", 500));
+  }
+
+  if (!isValidPassword) {
+    return next(new HttpError("Wrong password, email or username", 401));
+  }
+
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: user._id, username: user.username, email: user.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("Failed to login", 500));
+  }
+
   user.password = null;
-  res.json({ user });
+  res.json({ ...user, token });
 };
 
 const signUp = async (req, res, next) => {
   const { username, email, password } = req.body;
 
-  let user = new User({ username, email, password });
+  let hashedPassword;
+  try {
+    hashedPassword = await bcrypt.hash(password, 12);
+  } catch (err) {
+    console.log(err);
+    next(new HttpError("Failed creating new user", 500));
+  }
+
+  let user = new User({ username, email, password: hashedPassword });
   try {
     await user.save();
   } catch (error) {
@@ -139,7 +174,11 @@ const getFollowsByUserId = async (req, res, next) => {
   }
   let follows;
   try {
-    await User.find({ _id: { $in: user.following } });
+    follows = await User.find({
+      _id: {
+        $in: user.follows,
+      },
+    });
   } catch (err) {
     console.log(err);
     return next(new HttpError("Can't connect to the database", 500));
@@ -163,7 +202,7 @@ const getFollowersByUserId = async (req, res, next) => {
   }
   let followers;
   try {
-    await User.find({ _id: { $in: user.followers } });
+    followers = await User.find({ _id: { $in: user.followers } });
   } catch (err) {
     console.log(err);
     return next(new HttpError("Can't connect to the database", 500));

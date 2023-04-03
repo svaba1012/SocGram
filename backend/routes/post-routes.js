@@ -4,7 +4,10 @@ const postController = require("../controllers/post-controller");
 
 const PostRoutes = express.Router();
 
-PostRoutes.get("/api/posts/:pid", postController.getPostById);
-PostRoutes.post("/api/posts", postController.insertPost);
+PostRoutes.get("/:pid", postController.getPostById);
+PostRoutes.post("/", postController.insertPost);
+PostRoutes.delete("/:pid", postController.deletePost);
+
+PostRoutes.post("/:pid/likes", postController.likePost);
 
 module.exports = PostRoutes;

@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema({
   creator: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
   markedUsers: [{ type: mongoose.Types.ObjectId, required: true, ref: "User" }],
   likes: [{ type: mongoose.Types.ObjectId, required: true, ref: "User" }],
-  comments: [{ type: mongoose.Types.ObjectId, required: true, ref: "Comment" }],
+  // comments: [{ type: mongoose.Types.ObjectId, required: true, ref: "Comment" }],
 });
 
 module.exports = mongoose.model("Post", postSchema);
