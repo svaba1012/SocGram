@@ -1,0 +1,52 @@
+import server from "../config/server";
+import { SIGN_IN, SIGN_UP } from "./types";
+
+const USER_BASE_ROUTE = "/api/users";
+
+export const signUp = (username, email, password) => async (dispatch) => {
+  let res;
+  try {
+    res = await server.post(`${USER_BASE_ROUTE}/signup`, {
+      username,
+      email,
+      password,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  console.log(res);
+  dispatch({ type: SIGN_UP, payload: null });
+};
+
+export const signIn = (usernameOrEmail, password) => async (dispatch) => {
+  let res;
+  try {
+    res = await server.post(`${USER_BASE_ROUTE}/signin`, {
+      usernameOrEmail,
+      password,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  let user = res.data;
+  let userData = {
+    userId: user._id,
+    token: user.token,
+    expiresIn: new Date().getTime() + 60 * 1000 * 60,
+  };
+  if (res.status === 200) {
+    localStorage.setItem("userData", JSON.stringify(userData));
+
+    dispatch({ type: SIGN_IN, payload: userData });
+  }
+};
+
+export const signInWithToken = () => async (dispatch) => {
+  let userData = JSON.parse(localStorage.getItem("userData"));
+  if (userData.expiresIn < new Date().getTime()) {
+    userData = null;
+  }
+  dispatch({ type: SIGN_IN, payload: userData });
+};
