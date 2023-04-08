@@ -1,16 +1,18 @@
 import React, { useEffect } from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { Box } from "@mui/material";
-import BottomMenu from "./shared/components/navigation/BottomMenu";
-import SideMenu from "./shared/components/navigation/SideMenu";
-import UserChatPage from "./users/pages/UserChatPage";
-import UserExplorePage from "./users/pages/UserExplorePage";
-import UserMainPage from "./users/pages/UserMainPage";
-import UserProfilePage from "./users/pages/UserProfilePage";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import UserAuthPage from "./users/pages/UserAuthPage";
-import { connect } from "react-redux";
 
+import BottomMenu from "./components/navigation/BottomMenu";
+import SideMenu from "./components/navigation/SideMenu";
+import UserChatPage from "./components/pages/UserChatPage";
+import UserExplorePage from "./components/pages/UserExplorePage";
+import UserMainPage from "./components/pages/UserMainPage";
+import UserProfilePage from "./components/pages/UserProfilePage";
+import UserAuthPage from "./components/pages/UserAuthPage";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { connect } from "react-redux";
+import ProfilePosts from "./components/profile/ProfilePosts";
+import ProfileSavedPosts from "./components/profile/ProfileSavedPosts";
 import { signInWithToken } from "./actions";
 
 function App(props) {
@@ -20,7 +22,7 @@ function App(props) {
     props.signInWithToken();
   }, []);
 
-  if (!props.user.token) {
+  if (!props.user || !props.user.token) {
     return (
       <div>
         <BrowserRouter>
@@ -43,10 +45,11 @@ function App(props) {
           <Route path="/" element={<UserMainPage />}></Route>
           <Route path="/explore" element={<UserExplorePage />}></Route>
           <Route path="/chat/inbox" element={<UserChatPage />}></Route>
-          <Route
-            path="/profile/:username"
-            element={<UserProfilePage />}
-          ></Route>
+          <Route path="/profile/:username" element={<UserProfilePage />}>
+            <Route path="" element={<ProfilePosts />}></Route>
+            <Route path="saved" element={<ProfileSavedPosts />}></Route>
+            <Route path="tagged" element={<ProfilePosts isTagged />}></Route>
+          </Route>
           <Route path="/*" element={<Navigate to="/" replace />} />
         </Routes>
         {/* <Navigate to="/"></Navigate> */}

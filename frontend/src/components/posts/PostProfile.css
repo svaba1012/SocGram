@@ -1,0 +1,16 @@
+.image-hover {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  background-color: grey;
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.image-hover:hover {
+  opacity: 0.5;
+}

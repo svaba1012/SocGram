@@ -19,6 +19,8 @@ export const signUp = (username, email, password) => async (dispatch) => {
   dispatch({ type: SIGN_UP, payload: null });
 };
 
+let timeoutId;
+
 export const signIn = (usernameOrEmail, password) => async (dispatch) => {
   let res;
   try {
@@ -34,10 +36,18 @@ export const signIn = (usernameOrEmail, password) => async (dispatch) => {
   let userData = {
     userId: user._id,
     token: user.token,
-    expiresIn: new Date().getTime() + 60 * 1000 * 60,
+    expiresIn: new Date().getTime() + 60 * 60 * 1000,
   };
   if (res.status === 200) {
     localStorage.setItem("userData", JSON.stringify(userData));
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      localStorage.removeItem("userData");
+      dispatch({ type: SIGN_IN, payload: null });
+    }, 60 * 60 * 1000);
 
     dispatch({ type: SIGN_IN, payload: userData });
   }
@@ -46,7 +56,17 @@ export const signIn = (usernameOrEmail, password) => async (dispatch) => {
 export const signInWithToken = () => async (dispatch) => {
   let userData = JSON.parse(localStorage.getItem("userData"));
   if (userData.expiresIn < new Date().getTime()) {
-    userData = null;
+    dispatch({ type: SIGN_IN, payload: null });
+    localStorage.removeItem("userData");
+    return;
   }
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
+  timeoutId = setTimeout(() => {
+    localStorage.removeItem("userData");
+    dispatch({ type: SIGN_IN, payload: null });
+  }, userData.expiresIn - new Date().getTime());
+
   dispatch({ type: SIGN_IN, payload: userData });
 };

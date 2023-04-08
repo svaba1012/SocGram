@@ -12,7 +12,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { Paper } from "@mui/material";
-import { isByteLength, isEmail, isAlpha, equals } from "validator";
+import { isByteLength } from "validator";
 
 import { signIn } from "../../actions";
 

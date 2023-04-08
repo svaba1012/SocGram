@@ -4,8 +4,8 @@ import Container from "@mui/material/Container";
 import { Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import UserSignInForm from "../components/UserSignInForm";
-import UserSignUpForm from "../components/UserSignUpForm";
+import UserSignInForm from "../forms/UserSignInForm";
+import UserSignUpForm from "../forms/UserSignUpForm";
 
 function Copyright(props) {
   return (

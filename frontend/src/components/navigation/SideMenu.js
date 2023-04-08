@@ -16,8 +16,11 @@ import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import ListIcon from "@mui/icons-material/List";
 import SendIcon from "@mui/icons-material/Send";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import AddBoxIcon from "@mui/icons-material/AddBox";
 
 import SideMenuItem from "./SideMenuItem";
+import NewPostModal from "../modals/NewPostModal";
 
 const menuItems = [
   {
@@ -50,6 +53,12 @@ const menuItems = [
     to: "/",
     activeIcon: <FavoriteOutlinedIcon />,
   },
+  {
+    text: "Make a post",
+    icon: <AddBoxOutlinedIcon />,
+
+    activeIcon: <AddBoxIcon />,
+  },
   { text: "Profile", to: "/profile/123", avatarUrl: "/" },
   {
     text: "More",
@@ -64,10 +73,17 @@ const drawerMidWidth = 80;
 
 function SideMenu(props) {
   let [drawerActiveItem, setDrawerActiveItem] = useState(0);
+  let [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
+  let newPostId = menuItems.findIndex((el) => el.text === "Make a post");
+  menuItems[newPostId].onClick = () => setIsNewPostModalOpen(true);
   let match = useMediaQuery("(min-width:1250px)");
   let drawerWidth = match ? drawerDesktopWidth : drawerMidWidth;
   return (
     <Drawer variant="permanent" anchor="left" sx={{ width: drawerWidth }}>
+      <NewPostModal
+        open={isNewPostModalOpen}
+        handleClose={() => setIsNewPostModalOpen(false)}
+      />
       <Box role="presentation" sx={{ width: drawerWidth - 10 }}>
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Typography variant="h3" sx={{ textAlign: "center" }}>
@@ -84,7 +100,9 @@ function SideMenu(props) {
               id={index}
               isWideScreen={match}
               isActive={drawerActiveItem === index}
-              handleClick={() => setDrawerActiveItem(index)}
+              handleClick={() => {
+                item.onClick ? item.onClick() : setDrawerActiveItem(index);
+              }}
             />
           ))}
         </List>
