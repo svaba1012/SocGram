@@ -1,20 +1,11 @@
-import {
-  Box,
-  Modal,
-  TabPanel,
-  Button,
-  ListItem,
-  List,
-  ListItemText,
-  AvatarGroup,
-  Avatar,
-  Slider,
-} from "@mui/material";
-import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
-import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
-import React, { useState } from "react";
+import { Box, Modal, ListItem, List, ListItemText } from "@mui/material";
+
+import React from "react";
+import { connect } from "react-redux";
+
 import NewPostFormUpload from "../forms/NewPostForm/NewPostFormUpload";
 import NewPostFormCrop from "../forms/NewPostForm/NewPostFormCrop";
+import { setNewPostModalTab } from "../../actions";
 
 const style = {
   position: "absolute",
@@ -52,27 +43,24 @@ function ModalTab({
   );
 }
 
-function NewPostModal({ open, handleClose }) {
-  let [tabIndex, setTabIndex] = useState(0);
-  let [uploadedFiles, setUploadedFiles] = useState([]);
-
+function NewPostModal(props) {
+  const { open, handleClose } = props;
+  if (!props.modalState) {
+    return;
+  }
+  let tabIndex = props.modalState.tabIndex;
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         <ModalTab selectedIndex={tabIndex} index={0} label={"Make a new post"}>
           <NewPostFormUpload
-            files={uploadedFiles}
-            setFiles={setUploadedFiles}
             moveOnNext={() => {
-              setTabIndex(1);
+              props.setNewPostModalTab(1);
             }}
           />
         </ModalTab>
         <ModalTab selectedIndex={tabIndex} index={1} label={"Customise"}>
-          <NewPostFormCrop
-            files={uploadedFiles}
-            moveOnNext={() => setTabIndex(2)}
-          />
+          <NewPostFormCrop moveOnNext={() => setNewPostModalTab(2)} />
         </ModalTab>
         <ModalTab
           selectedIndex={tabIndex}
@@ -94,4 +82,8 @@ function NewPostModal({ open, handleClose }) {
   );
 }
 
-export default NewPostModal;
+const mapState = (state) => {
+  return { modalState: state.newPostModalState };
+};
+
+export default connect(mapState, { setNewPostModalTab })(NewPostModal);

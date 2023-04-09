@@ -2,8 +2,12 @@ import React from "react";
 import { Button, ListItem, List, ListItemText } from "@mui/material";
 import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
+import { connect } from "react-redux";
 
-function NewPostFormUpload({ moveOnNext, setFiles }) {
+import { setNewPostImages } from "../../../actions";
+
+function NewPostFormUpload(props) {
+  const { moveOnNext } = props;
   return (
     <div>
       <ListItem sx={{ display: "flex", justifyContent: "center" }}>
@@ -23,11 +27,22 @@ function NewPostFormUpload({ moveOnNext, setFiles }) {
             multiple
             type="file"
             onChange={(e) => {
-              setFiles(e.target.files);
-              if (e.target.files.length > 0) {
+              let files = e.target.files;
+              if (files.length === 0) {
+                props.setNewPostImages([]);
+                return;
+              }
+              files = [...Array(files.length).keys()].map((i) => {
+                return { file: files[i], url: URL.createObjectURL(files[i]) };
+              });
+
+              console.log(files);
+
+              props.setNewPostImages(files);
+
+              if (files.length > 0) {
                 moveOnNext();
               }
-              console.log(e.target.files);
             }}
           />
         </Button>
@@ -36,4 +51,8 @@ function NewPostFormUpload({ moveOnNext, setFiles }) {
   );
 }
 
-export default NewPostFormUpload;
+const mapState = (state) => {
+  return {};
+};
+
+export default connect(mapState, { setNewPostImages })(NewPostFormUpload);

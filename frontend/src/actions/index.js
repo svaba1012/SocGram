@@ -1,5 +1,11 @@
 import server from "../config/server";
-import { SIGN_IN, SIGN_UP } from "./types";
+import {
+  SET_NEW_POST_IMAGES,
+  SET_NEW_POST_IMAGE_ASPECT_RATIO,
+  SET_NEW_POST_MODAL_TAB,
+  SIGN_IN,
+  SIGN_UP,
+} from "./types";
 
 const USER_BASE_ROUTE = "/api/users";
 
@@ -69,4 +75,16 @@ export const signInWithToken = () => async (dispatch) => {
   }, userData.expiresIn - new Date().getTime());
 
   dispatch({ type: SIGN_IN, payload: userData });
+};
+
+export const setNewPostModalTab = (tabIndex) => {
+  return { type: SET_NEW_POST_MODAL_TAB, payload: tabIndex };
+};
+
+export const setNewPostImageAspectRatio = (aspectRatio) => {
+  return { type: SET_NEW_POST_IMAGE_ASPECT_RATIO, payload: aspectRatio };
+};
+
+export const setNewPostImages = (images) => {
+  return { type: SET_NEW_POST_IMAGES, payload: images };
 };

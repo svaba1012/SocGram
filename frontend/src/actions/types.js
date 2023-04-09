@@ -1,2 +1,6 @@
 export const SIGN_UP = "SIGN_UP";
 export const SIGN_IN = "SIGN_IN";
+export const SET_NEW_POST_MODAL_TAB = "SET_NEW_POST_MODAL_TAB";
+export const SET_NEW_POST_IMAGE_ASPECT_RATIO =
+  "SET_NEW_POST_IMAGE_ASPECT_RATIO";
+export const SET_NEW_POST_IMAGES = "SET_NEW_POST_IMAGES";
