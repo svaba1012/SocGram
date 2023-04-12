@@ -33,7 +33,11 @@ function NewPostFormUpload(props) {
                 return;
               }
               files = [...Array(files.length).keys()].map((i) => {
-                return { file: files[i], url: URL.createObjectURL(files[i]) };
+                return {
+                  file: files[i],
+                  url: URL.createObjectURL(files[i]),
+                  zoom: 0,
+                };
               });
 
               console.log(files);

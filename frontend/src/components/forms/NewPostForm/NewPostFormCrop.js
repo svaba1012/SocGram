@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
 import MobileStepper from "@mui/material/MobileStepper";
 import Fab from "@mui/material/Fab";
@@ -9,22 +9,44 @@ import { connect } from "react-redux";
 import ScrollContainer from "react-indiana-drag-scroll";
 
 import AspectRatioPopper from "../../popper/AspectRatioPopper";
+import ZoomPopper from "../../popper/ZoomPopper";
+import { setNewPostImageIndex, setNewPostImagesScroll } from "../../../actions";
 
-function NewPostFormCrop({ files, aspectRatio }) {
+const aspectRatioValues = {
+  "1/1": 1,
+  "4/5": 0.8,
+  "16/9": 16 / 9,
+};
+
+function NewPostFormCrop({
+  files,
+  aspectRatio,
+  imageId,
+  setNewPostImageIndex,
+  setNewPostImagesScroll,
+}) {
   const theme = useTheme();
-  const [activeStep, setActiveStep] = React.useState(0);
+  // const [activeStep, setActiveStep] = React.useState(0);
   const [isImageGridVisible, setIsImageGridVisible] = React.useState(false);
 
-  if (!files) {
+  const scrollContainerRef = useRef([]);
+
+  useEffect(() => {
+    scrollContainerRef.current = scrollContainerRef.current.slice(
+      0,
+      files.length
+    );
+  }, [files]);
+
+  if (!files || files.length === 0) {
     return;
   }
-
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setNewPostImageIndex(imageId + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setNewPostImageIndex(imageId - 1);
   };
 
   return (
@@ -48,23 +70,63 @@ function NewPostFormCrop({ files, aspectRatio }) {
         }}
       >
         {files.map((file, id) => {
-          let imageStyle = {
-            display: id === activeStep ? "block" : "none",
+          let scrollerStyle = {
+            display: id === imageId ? "block" : "none",
             //objectFit: "cover",
             overflow: "auto",
           };
-          imageStyle =
+          scrollerStyle =
             aspectRatio === "4/5"
-              ? { ...imageStyle, height: "inherit", aspectRatio: aspectRatio }
-              : { ...imageStyle, width: "inherit", aspectRatio: aspectRatio };
+              ? {
+                  ...scrollerStyle,
+                  height: "inherit",
+                  aspectRatio: aspectRatio,
+                }
+              : {
+                  ...scrollerStyle,
+                  width: "inherit",
+                  aspectRatio: aspectRatio,
+                };
 
+          let imageHeight;
+          let imageWidth;
+          let zoomCoeficient = 1 + file.zoom / 100;
+          if (file.width / file.height >= aspectRatioValues[aspectRatio]) {
+            imageHeight = `${100 * zoomCoeficient}%`;
+            imageWidth = `${
+              (100 * file.width * zoomCoeficient * 1) /
+              aspectRatioValues[aspectRatio] /
+              file.height
+            }%`;
+          } else {
+            imageWidth = `${100 * zoomCoeficient}%`;
+            imageHeight = `${
+              (100 *
+                file.height *
+                zoomCoeficient *
+                aspectRatioValues[aspectRatio]) /
+              file.width
+            }%`;
+          }
+          let imageStyle = {
+            height: imageHeight,
+            width: imageWidth,
+          };
           return (
             <ScrollContainer
-              style={imageStyle}
+              style={scrollerStyle}
+              ref={(el) => (scrollContainerRef.current[id] = el)}
               onStartScroll={() => setIsImageGridVisible(true)}
-              onEndScroll={() => setIsImageGridVisible(false)}
+              onEndScroll={() => {
+                setIsImageGridVisible(false);
+                const { scrollTop, scrollLeft } =
+                  scrollContainerRef.current[id].getElement();
+                console.log(scrollTop + " , " + scrollLeft);
+                const scroll = { top: scrollTop, left: scrollLeft };
+                setNewPostImagesScroll(id, scroll);
+              }}
             >
-              <img alt="Slika" src={file.url}></img>
+              <img alt="Slika" src={file.url} style={imageStyle}></img>
             </ScrollContainer>
           );
         })}
@@ -95,7 +157,7 @@ function NewPostFormCrop({ files, aspectRatio }) {
         size="small"
         onClick={handleNext}
         sx={{
-          display: activeStep === files.length - 1 ? "none" : "flex",
+          display: imageId === files.length - 1 ? "none" : "flex",
           position: "absolute",
           right: "10px",
           top: "50%",
@@ -116,7 +178,7 @@ function NewPostFormCrop({ files, aspectRatio }) {
         size="small"
         onClick={handleBack}
         sx={{
-          display: activeStep === 0 ? "none" : "flex",
+          display: imageId === 0 ? "none" : "flex",
           position: "absolute",
           left: "10px",
           top: "50%",
@@ -142,6 +204,16 @@ function NewPostFormCrop({ files, aspectRatio }) {
         }}
         placement="top-start"
       />
+
+      <ZoomPopper
+        style={{
+          position: "absolute",
+          bottom: "20px",
+          left: "60px",
+          zIndex: 50,
+        }}
+        placement="top-start"
+      />
       <Box
         sx={{
           position: "absolute",
@@ -153,7 +225,7 @@ function NewPostFormCrop({ files, aspectRatio }) {
           variant="dots"
           steps={files.length}
           position="static"
-          activeStep={activeStep}
+          activeStep={imageId}
           sx={{
             flexGrow: 1,
             backgroundColor: "unset",
@@ -169,7 +241,11 @@ const mapState = (state) => {
   return {
     files: state.newPostModalState.files,
     aspectRatio: state.newPostModalState.aspectRatio,
+    imageId: state.newPostModalState.imageId,
   };
 };
 
-export default connect(mapState, {})(NewPostFormCrop);
+export default connect(mapState, {
+  setNewPostImageIndex,
+  setNewPostImagesScroll,
+})(NewPostFormCrop);

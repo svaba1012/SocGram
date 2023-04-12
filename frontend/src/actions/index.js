@@ -1,7 +1,10 @@
 import server from "../config/server";
 import {
   SET_NEW_POST_IMAGES,
+  SET_NEW_POST_IMAGES_ZOOM,
   SET_NEW_POST_IMAGE_ASPECT_RATIO,
+  SET_NEW_POST_IMAGE_INDEX,
+  SET_NEW_POST_IMAGE_SCROLL,
   SET_NEW_POST_MODAL_TAB,
   SIGN_IN,
   SIGN_UP,
@@ -85,6 +88,40 @@ export const setNewPostImageAspectRatio = (aspectRatio) => {
   return { type: SET_NEW_POST_IMAGE_ASPECT_RATIO, payload: aspectRatio };
 };
 
-export const setNewPostImages = (images) => {
-  return { type: SET_NEW_POST_IMAGES, payload: images };
+function getImageHeightAndWidth(src) {
+  return new Promise((resolve, reject) => {
+    let img = new Image();
+    img.onload = () => resolve({ height: img.height, width: img.width });
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+export const setNewPostImages = (images) => async (dispatch) => {
+  let imagesWithMetaData = await Promise.all(
+    images.map(async (file) => {
+      const { height, width } = await getImageHeightAndWidth(file.url);
+      return {
+        ...file,
+        file: file.file,
+        height,
+        width,
+        scroll: { top: 0, left: 0 },
+      };
+    })
+  );
+
+  dispatch({ type: SET_NEW_POST_IMAGES, payload: imagesWithMetaData });
+};
+
+export const setNewPostImagesZoom = (imageId, zoom) => {
+  return { type: SET_NEW_POST_IMAGES_ZOOM, payload: { imageId, zoom } };
+};
+
+export const setNewPostImagesScroll = (imageIndex, scroll) => {
+  return { type: SET_NEW_POST_IMAGE_SCROLL, payload: { imageIndex, scroll } };
+};
+
+export const setNewPostImageIndex = (imageId) => {
+  return { type: SET_NEW_POST_IMAGE_INDEX, payload: imageId };
 };

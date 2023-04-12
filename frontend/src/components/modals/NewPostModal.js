@@ -1,4 +1,12 @@
-import { Box, Modal, ListItem, List, ListItemText } from "@mui/material";
+import {
+  Box,
+  Modal,
+  ListItem,
+  List,
+  ListItemText,
+  Button,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import React from "react";
 import { connect } from "react-redux";
@@ -32,10 +40,18 @@ function ModalTab({
     <div style={{ display: selectedIndex === index ? "block" : "none" }}>
       <List>
         <ListItem divider>
+          {moveOnPrev ? (
+            <Button onClick={moveOnPrev}>
+              <ArrowBackIcon />
+            </Button>
+          ) : (
+            ""
+          )}
           <ListItemText
             primary={label}
             sx={{ textAlign: "center" }}
           ></ListItemText>
+          {moveOnNext ? <Button onClick={moveOnNext}>Next</Button> : ""}
         </ListItem>
         {children}
       </List>
@@ -44,7 +60,7 @@ function ModalTab({
 }
 
 function NewPostModal(props) {
-  const { open, handleClose } = props;
+  const { open, handleClose, setNewPostModalTab } = props;
   if (!props.modalState) {
     return;
   }
@@ -59,24 +75,41 @@ function NewPostModal(props) {
             }}
           />
         </ModalTab>
-        <ModalTab selectedIndex={tabIndex} index={1} label={"Customise"}>
+        <ModalTab
+          selectedIndex={tabIndex}
+          index={1}
+          label={"Customise"}
+          moveOnNext={() => setNewPostModalTab(2)}
+          moveOnPrev={() => setNewPostModalTab(0)}
+        >
           <NewPostFormCrop moveOnNext={() => setNewPostModalTab(2)} />
         </ModalTab>
         <ModalTab
           selectedIndex={tabIndex}
           index={2}
           label={"Customise"}
-        ></ModalTab>
+          moveOnNext={() => setNewPostModalTab(3)}
+          moveOnPrev={() => setNewPostModalTab(1)}
+        >
+          A
+        </ModalTab>
         <ModalTab
           selectedIndex={tabIndex}
           index={3}
           label={"Customise"}
-        ></ModalTab>
+          moveOnNext={() => setNewPostModalTab(4)}
+          moveOnPrev={() => setNewPostModalTab(2)}
+        >
+          B
+        </ModalTab>
         <ModalTab
           selectedIndex={tabIndex}
           index={4}
           label={"Customise"}
-        ></ModalTab>
+          moveOnPrev={() => setNewPostModalTab(3)}
+        >
+          C
+        </ModalTab>
       </Box>
     </Modal>
   );
