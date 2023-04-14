@@ -18,23 +18,23 @@ import { signInWithToken } from "./actions";
 function App(props) {
   const matches = useMediaQuery("(min-width:600px)");
 
-  // useEffect(() => {
-  //   props.signInWithToken();
-  // }, []);
+  useEffect(() => {
+    props.signInWithToken();
+  }, []);
 
-  // if (!props.user || !props.user.token) {
-  //   return (
-  //     <div>
-  //       <BrowserRouter>
-  //         <Routes>
-  //           <Route path="/" element={<UserAuthPage />}></Route>
-  //           <Route path="/signup" element={<UserAuthPage isSignUp />}></Route>
-  //           <Route path="/*" element={<Navigate to="/" replace />} />
-  //         </Routes>
-  //       </BrowserRouter>
-  //     </div>
-  //   );
-  // }
+  if (!props.user || !props.user.token) {
+    return (
+      <div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<UserAuthPage />}></Route>
+            <Route path="/signup" element={<UserAuthPage isSignUp />}></Route>
+            <Route path="/*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    );
+  }
 
   return (
     <Box sx={{ display: "flex" }}>

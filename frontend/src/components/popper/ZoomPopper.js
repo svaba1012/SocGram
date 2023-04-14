@@ -7,13 +7,12 @@ import { Slider, Box } from "@mui/material";
 
 import { setNewPostImagesZoom } from "../../actions";
 
-function ZoomPopper({
-  style,
-  placement,
-  imageZoom,
-  imageId,
-  setNewPostImagesZoom,
-}) {
+function ZoomPopper(props) {
+  let { style, placement, images, imageId, setNewPostImagesZoom } = props;
+  if (!images || images.length === 0) {
+    return <div></div>;
+  }
+  let imageZoom = images[imageId].zoom;
   const handleChange = (event, newValue) => {
     setNewPostImagesZoom(imageId, newValue);
   };
@@ -43,9 +42,7 @@ function ZoomPopper({
 }
 
 const mapState = (state) => {
-  let imageId = state.newPostModalState.imageId;
-
-  return { imageZoom: state.newPostModalState.files[imageId].zoom, imageId };
+  return { images: state.newPostModalState.files };
 };
 
 export default connect(mapState, { setNewPostImagesZoom })(ZoomPopper);

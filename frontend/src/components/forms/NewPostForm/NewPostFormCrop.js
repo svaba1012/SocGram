@@ -11,6 +11,7 @@ import ScrollContainer from "react-indiana-drag-scroll";
 import AspectRatioPopper from "../../popper/AspectRatioPopper";
 import ZoomPopper from "../../popper/ZoomPopper";
 import { setNewPostImageIndex, setNewPostImagesScroll } from "../../../actions";
+import { cropImage } from "../../../utils/imageProcess";
 
 const aspectRatioValues = {
   "1/1": 1,

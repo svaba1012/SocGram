@@ -12,8 +12,13 @@ import React from "react";
 import { connect } from "react-redux";
 
 import NewPostFormUpload from "../forms/NewPostForm/NewPostFormUpload";
-import NewPostFormCrop from "../forms/NewPostForm/NewPostFormCrop";
-import { setNewPostModalTab } from "../../actions";
+import NewPostFormCrop1 from "../forms/NewPostForm/NewPostFormCrop1";
+import {
+  setNewPostModalTab,
+  processCroppingOfImages,
+  setNewPostModalWindowWidth,
+} from "../../actions";
+import NewPostFormFinish from "../forms/NewPostForm/NewPostFormFinish";
 
 const style = {
   position: "absolute",
@@ -60,11 +65,20 @@ function ModalTab({
 }
 
 function NewPostModal(props) {
-  const { open, handleClose, setNewPostModalTab } = props;
+  const {
+    open,
+    handleClose,
+    setNewPostModalTab,
+    processCroppingOfImages,
+    setNewPostModalWindowWidth,
+  } = props;
   if (!props.modalState) {
     return;
   }
   let tabIndex = props.modalState.tabIndex;
+
+  style.width = props.modalState.windowWidth;
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
@@ -79,10 +93,14 @@ function NewPostModal(props) {
           selectedIndex={tabIndex}
           index={1}
           label={"Customise"}
-          moveOnNext={() => setNewPostModalTab(2)}
+          moveOnNext={() => {
+            setNewPostModalTab(2);
+            processCroppingOfImages();
+            setNewPostModalWindowWidth(800);
+          }}
           moveOnPrev={() => setNewPostModalTab(0)}
         >
-          <NewPostFormCrop moveOnNext={() => setNewPostModalTab(2)} />
+          <NewPostFormCrop1 moveOnNext={() => setNewPostModalTab(2)} />
         </ModalTab>
         <ModalTab
           selectedIndex={tabIndex}
@@ -91,7 +109,7 @@ function NewPostModal(props) {
           moveOnNext={() => setNewPostModalTab(3)}
           moveOnPrev={() => setNewPostModalTab(1)}
         >
-          A
+          <NewPostFormFinish />
         </ModalTab>
         <ModalTab
           selectedIndex={tabIndex}
@@ -119,4 +137,8 @@ const mapState = (state) => {
   return { modalState: state.newPostModalState };
 };
 
-export default connect(mapState, { setNewPostModalTab })(NewPostModal);
+export default connect(mapState, {
+  setNewPostModalTab,
+  processCroppingOfImages,
+  setNewPostModalWindowWidth,
+})(NewPostModal);

@@ -1,5 +1,5 @@
 import React from "react";
-import { Popper, Box, Fab } from "@mui/material";
+import { Popper, Box, Fab, Popover } from "@mui/material";
 
 function CustomNewPostPopper(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -7,9 +7,12 @@ function CustomNewPostPopper(props) {
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <div style={props.style}>
@@ -21,15 +24,23 @@ function CustomNewPostPopper(props) {
       >
         {props.label}
       </Fab>
-      <Popper
+      <Popover
         id={id}
-        open={open}
         anchorEl={anchorEl}
+        open={open}
         sx={{ zIndex: 2000 }}
-        placement={props.placement}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
       >
         {props.children}
-      </Popper>
+      </Popover>
     </div>
   );
 }

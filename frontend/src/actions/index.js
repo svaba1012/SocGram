@@ -1,11 +1,14 @@
 import server from "../config/server";
+import { cropImage } from "../utils/imageProcess";
 import {
+  PROCESS_CROPPING_OF_IMAGES,
   SET_NEW_POST_IMAGES,
   SET_NEW_POST_IMAGES_ZOOM,
   SET_NEW_POST_IMAGE_ASPECT_RATIO,
   SET_NEW_POST_IMAGE_INDEX,
   SET_NEW_POST_IMAGE_SCROLL,
   SET_NEW_POST_MODAL_TAB,
+  SET_NEW_POST_MODAL_WINDOW_WIDTH,
   SIGN_IN,
   SIGN_UP,
 } from "./types";
@@ -124,4 +127,17 @@ export const setNewPostImagesScroll = (imageIndex, scroll) => {
 
 export const setNewPostImageIndex = (imageId) => {
   return { type: SET_NEW_POST_IMAGE_INDEX, payload: imageId };
+};
+
+export const processCroppingOfImages = () => async (dispatch, getState) => {
+  let { files, aspectRatio } = getState().newPostModalState;
+
+  let cropedUrls = await Promise.all(
+    files.map(async (file) => await cropImage(file, aspectRatio))
+  );
+  dispatch({ type: PROCESS_CROPPING_OF_IMAGES, payload: cropedUrls });
+};
+
+export const setNewPostModalWindowWidth = (width) => {
+  return { type: SET_NEW_POST_MODAL_WINDOW_WIDTH, payload: width };
 };
