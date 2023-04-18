@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 
 const User = require("../models/user-model");
 const HttpError = require("../models/httpError");
@@ -47,7 +48,7 @@ const signIn = async (req, res, next) => {
   }
 
   user.password = null;
-  res.json({ ...user, token });
+  res.json({ user, token });
 };
 
 const signUp = async (req, res, next) => {
@@ -74,10 +75,10 @@ const signUp = async (req, res, next) => {
 };
 
 const getUserProfile = async (req, res, next) => {
-  let { uid } = req.params;
+  let { username } = req.params;
   let userProfile;
   try {
-    userProfile = await User.findById(uid);
+    userProfile = await User.findOne({ username: username });
   } catch (error) {
     console.log(error);
     return next(new HttpError("Can't connect to the database", 500));
@@ -87,7 +88,56 @@ const getUserProfile = async (req, res, next) => {
     return next(new HttpError("User don't exist"));
   }
 
+  userProfile.password = null;
+
   res.json({ user: userProfile });
+};
+
+const changeProfilePicture = async (req, res, next) => {
+  let userId = req.params.uid;
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    return next(new HttpError("DB error", 500));
+  }
+  if (!user) {
+    return next(new HttpError("Not found", 404));
+  }
+
+  user.profileImage = req.file.path;
+
+  await user.save();
+
+  res.json({ imageUrl: user.profileImage });
+};
+
+const removeProfilePicture = async (req, res, next) => {
+  let userId = req.params.uid;
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    return next(new HttpError("DB error", 500));
+  }
+  if (!user) {
+    return next(new HttpError("Not found", 404));
+  }
+
+  try {
+    let sess = await mongoose.startSession();
+    sess.startTransaction();
+    fs.unlink(user.profileImage, (err) => {
+      console.log(err);
+    });
+    user.profileImage = null;
+    await user.save({ session: sess });
+    sess.commitTransaction();
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.json({ msg: "Successfuly deleted" }).status(202);
 };
 
 const insertFollow = async (req, res, next) => {
@@ -147,9 +197,9 @@ const deleteFollow = async (req, res, next) => {
     let sess = await mongoose.startSession();
     sess.startTransaction();
     followedUser.followers.pull(userId);
-    await followedUser.save();
+    await followedUser.save({ session: sess });
     followerUser.follows.pull(followedId);
-    await followerUser.save();
+    await followerUser.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
     console.log(err);
@@ -219,4 +269,6 @@ module.exports = {
   deleteFollow,
   getFollowsByUserId,
   getFollowersByUserId,
+  changeProfilePicture,
+  removeProfilePicture,
 };

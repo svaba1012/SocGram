@@ -59,8 +59,18 @@ function CustomOptionModal({
           {headerText ? (
             <ListItem divider>
               <ListItemText
-                primary={headerText}
-                secondary={headerSubText ? headerSubText : ""}
+                sx={{ textAlign: "center" }}
+                disableTypography
+                primary={
+                  <Typography sx={{ fontSize: "1.3em" }}>
+                    {headerText}
+                  </Typography>
+                }
+                secondary={
+                  <Typography sx={{ color: "grey", fontSize: "1.1em" }}>
+                    {headerSubText ? headerSubText : ""}
+                  </Typography>
+                }
               ></ListItemText>
             </ListItem>
           ) : (
@@ -80,6 +90,11 @@ function CustomOptionModal({
                     paddingBottom: "3px",
                     width: "100%",
                     textAlign: "center",
+                    color: option.warning
+                      ? "red"
+                      : option.confirm
+                      ? "blue"
+                      : "inherit",
                   }}
                 >
                   {option.text}

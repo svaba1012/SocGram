@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import NewPostFormUpload from "../forms/NewPostForm/NewPostFormUpload";
@@ -17,8 +17,10 @@ import {
   setNewPostModalTab,
   processCroppingOfImages,
   setNewPostModalWindowWidth,
+  resetModalState,
 } from "../../actions";
 import NewPostFormFinish from "../forms/NewPostForm/NewPostFormFinish";
+import QuitingNewPostModal from "./QuitingNewPostModal";
 
 const style = {
   position: "absolute",
@@ -40,6 +42,7 @@ function ModalTab({
   moveOnNext,
   moveOnPrev,
   children,
+  isEnd,
 }) {
   return (
     <div style={{ display: selectedIndex === index ? "block" : "none" }}>
@@ -56,7 +59,11 @@ function ModalTab({
             primary={label}
             sx={{ textAlign: "center" }}
           ></ListItemText>
-          {moveOnNext ? <Button onClick={moveOnNext}>Next</Button> : ""}
+          {moveOnNext ? (
+            <Button onClick={moveOnNext}>{isEnd ? "Post" : "Next"}</Button>
+          ) : (
+            ""
+          )}
         </ListItem>
         {children}
       </List>
@@ -71,7 +78,10 @@ function NewPostModal(props) {
     setNewPostModalTab,
     processCroppingOfImages,
     setNewPostModalWindowWidth,
+    resetModalState,
   } = props;
+
+  let [isQuitingModalOpen, setIsQuitingModalOpen] = useState(false);
   if (!props.modalState) {
     return;
   }
@@ -79,8 +89,22 @@ function NewPostModal(props) {
 
   style.width = props.modalState.windowWidth;
 
+  const quitModal = () => {
+    handleClose();
+    resetModalState();
+  };
+
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={() => {
+        if (tabIndex === 0) {
+          quitModal();
+        } else {
+          setIsQuitingModalOpen(true);
+        }
+      }}
+    >
       <Box sx={style}>
         <ModalTab selectedIndex={tabIndex} index={0} label={"Make a new post"}>
           <NewPostFormUpload
@@ -106,28 +130,24 @@ function NewPostModal(props) {
           selectedIndex={tabIndex}
           index={2}
           label={"Customise"}
-          moveOnNext={() => setNewPostModalTab(3)}
-          moveOnPrev={() => setNewPostModalTab(1)}
+          moveOnNext={() => console.log("posting")}
+          moveOnPrev={() => {
+            setNewPostModalWindowWidth(400);
+            setNewPostModalTab(1);
+          }}
+          isEnd
         >
           <NewPostFormFinish />
         </ModalTab>
-        <ModalTab
-          selectedIndex={tabIndex}
-          index={3}
-          label={"Customise"}
-          moveOnNext={() => setNewPostModalTab(4)}
-          moveOnPrev={() => setNewPostModalTab(2)}
-        >
-          B
-        </ModalTab>
-        <ModalTab
-          selectedIndex={tabIndex}
-          index={4}
-          label={"Customise"}
-          moveOnPrev={() => setNewPostModalTab(3)}
-        >
-          C
-        </ModalTab>
+
+        <QuitingNewPostModal
+          open={isQuitingModalOpen}
+          handleClose={() => setIsQuitingModalOpen(false)}
+          quit={() => {
+            setIsQuitingModalOpen(false);
+            quitModal();
+          }}
+        />
       </Box>
     </Modal>
   );
@@ -141,4 +161,5 @@ export default connect(mapState, {
   setNewPostModalTab,
   processCroppingOfImages,
   setNewPostModalWindowWidth,
+  resetModalState,
 })(NewPostModal);

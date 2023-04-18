@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -59,7 +60,7 @@ const menuItems = [
 
     activeIcon: <AddBoxIcon />,
   },
-  { text: "Profile", to: "/profile/123", avatarUrl: "/" },
+  { text: "Profile", to: "/profile/", avatarUrl: "/" },
   {
     text: "More",
     icon: <ListOutlinedIcon />,
@@ -75,7 +76,9 @@ function SideMenu(props) {
   let [drawerActiveItem, setDrawerActiveItem] = useState(0);
   let [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
   let newPostId = menuItems.findIndex((el) => el.text === "Make a post");
+  let profileId = menuItems.findIndex((el) => el.text === "Profile");
   menuItems[newPostId].onClick = () => setIsNewPostModalOpen(true);
+  menuItems[profileId].to = `/profile/${props.user.username}`;
   let match = useMediaQuery("(min-width:1250px)");
   let drawerWidth = match ? drawerDesktopWidth : drawerMidWidth;
   return (
@@ -111,4 +114,8 @@ function SideMenu(props) {
   );
 }
 
-export default SideMenu;
+const mapState = (state) => {
+  return { user: state.user };
+};
+
+export default connect(mapState, {})(SideMenu);

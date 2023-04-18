@@ -40,6 +40,6 @@ export const cropImage = async (file, ratioStr) => {
     height: windowHeight * scaleConstant,
   });
 
-  let url = cropedImage.toDataURL("image/png");
-  return url;
+  // let url = cropedImage.toDataURL("image/png");
+  return cropedImage;
 };

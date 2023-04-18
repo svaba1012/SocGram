@@ -37,10 +37,13 @@ const insertPost = async (req, res, next) => {
     return next(new HttpError("Wrong user", 422));
   }
 
+  console.log(req.files);
+
   let post = new Post({ time: new Date().getTime(), creator });
 
   //   FINISH...
   // implement file uploading
+  res.json({ post });
 };
 
 const likePost = async (req, res, next) => {

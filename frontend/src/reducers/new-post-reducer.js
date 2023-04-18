@@ -1,5 +1,6 @@
 import {
   PROCESS_CROPPING_OF_IMAGES,
+  RESET_MODAL_STATE,
   SET_NEW_POST_IMAGES,
   SET_NEW_POST_IMAGES_ZOOM,
   SET_NEW_POST_IMAGE_ASPECT_RATIO,
@@ -16,6 +17,7 @@ const newPostReducer = (
     aspectRatio: "1/1",
     imageId: 0,
     cropedFilesUrl: [],
+    cropedImages: [],
     windowWidth: 400,
   },
   action
@@ -40,9 +42,18 @@ const newPostReducer = (
       files1[imageIndex].scroll = scroll;
       return { ...state, files: files1 };
     case PROCESS_CROPPING_OF_IMAGES:
-      return { ...state, cropedFilesUrl: action.payload };
+      return { ...state, ...action.payload };
     case SET_NEW_POST_MODAL_WINDOW_WIDTH:
       return { ...state, windowWidth: action.payload };
+    case RESET_MODAL_STATE:
+      return {
+        tabIndex: 0,
+        files: [],
+        aspectRatio: "1/1",
+        imageId: 0,
+        cropedFilesUrl: [],
+        windowWidth: 400,
+      };
     default:
       return { ...state };
   }

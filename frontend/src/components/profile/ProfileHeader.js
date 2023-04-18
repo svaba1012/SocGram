@@ -9,11 +9,17 @@ import {
 import SettingsIcon from "@mui/icons-material/Settings";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import SettingsModal from "../modals/SettingsModal";
+import ChangeProfileImageModal from "../modals/ChangeProfileImageModal";
 
 function ProfileHeader({ user }) {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isChangeProfileImageOpen, setIsChangeProfileImageOpen] =
+    useState(false);
+
+  console.log(user);
 
   return (
     <div>
@@ -21,12 +27,17 @@ function ProfileHeader({ user }) {
         open={isSettingsModalOpen}
         handleClose={() => setIsSettingsModalOpen(false)}
       />
+      <ChangeProfileImageModal
+        open={isChangeProfileImageOpen}
+        handleClose={() => setIsChangeProfileImageOpen(false)}
+      />
       <Box sx={{ display: "flex" }}>
         <Box sx={{ display: "flex", justifyContent: "center", width: "30%" }}>
           <Avatar
-            alt="Profile pic"
-            src="#"
-            sx={{ width: "10rem", height: "10rem" }}
+            alt={user.username}
+            src={user.profileImage ? user.profileImage : ""}
+            sx={{ width: "10rem", height: "10rem", cursor: "pointer" }}
+            onClick={() => setIsChangeProfileImageOpen(true)}
           ></Avatar>
         </Box>
         <Box sx={{ marginLeft: "30px" }}>
@@ -80,4 +91,8 @@ function ProfileHeader({ user }) {
   );
 }
 
-export default ProfileHeader;
+const mapState = (state) => {
+  return { user: state.profile };
+};
+
+export default connect(mapState, {})(ProfileHeader);

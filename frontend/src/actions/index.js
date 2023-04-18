@@ -1,7 +1,10 @@
 import server from "../config/server";
 import { cropImage } from "../utils/imageProcess";
 import {
+  GET_USER_PROFILE,
+  POST_NEW_POST,
   PROCESS_CROPPING_OF_IMAGES,
+  RESET_MODAL_STATE,
   SET_NEW_POST_IMAGES,
   SET_NEW_POST_IMAGES_ZOOM,
   SET_NEW_POST_IMAGE_ASPECT_RATIO,
@@ -14,6 +17,7 @@ import {
 } from "./types";
 
 const USER_BASE_ROUTE = "/api/users";
+const POST_BASE_ROUTE = "/api/posts";
 
 export const signUp = (username, email, password) => async (dispatch) => {
   let res;
@@ -44,10 +48,12 @@ export const signIn = (usernameOrEmail, password) => async (dispatch) => {
     console.log(err);
   }
 
-  let user = res.data;
+  let user = res.data.user;
+  console.log(user);
   let userData = {
     userId: user._id,
-    token: user.token,
+    username: user.username,
+    token: res.data.token,
     expiresIn: new Date().getTime() + 60 * 60 * 1000,
   };
   if (res.status === 200) {
@@ -61,7 +67,10 @@ export const signIn = (usernameOrEmail, password) => async (dispatch) => {
       dispatch({ type: SIGN_IN, payload: null });
     }, 60 * 60 * 1000);
 
-    dispatch({ type: SIGN_IN, payload: userData });
+    dispatch({
+      type: SIGN_IN,
+      payload: userData,
+    });
   }
 };
 
@@ -81,6 +90,14 @@ export const signInWithToken = () => async (dispatch) => {
   }, userData.expiresIn - new Date().getTime());
 
   dispatch({ type: SIGN_IN, payload: userData });
+};
+
+export const getUserProfile = (username) => async (dispatch) => {
+  let res = await server.get(`${USER_BASE_ROUTE}/${username}`);
+  // PROVJERI
+
+  let profile = res.data;
+  dispatch({ type: GET_USER_PROFILE, payload: profile.user });
 };
 
 export const setNewPostModalTab = (tabIndex) => {
@@ -132,12 +149,41 @@ export const setNewPostImageIndex = (imageId) => {
 export const processCroppingOfImages = () => async (dispatch, getState) => {
   let { files, aspectRatio } = getState().newPostModalState;
 
-  let cropedUrls = await Promise.all(
+  let cropedImages = await Promise.all(
     files.map(async (file) => await cropImage(file, aspectRatio))
   );
-  dispatch({ type: PROCESS_CROPPING_OF_IMAGES, payload: cropedUrls });
+
+  let cropedFilesUrl = await Promise.all(
+    cropedImages.map(async (image) => await image.toDataURL("image/png"))
+  );
+  dispatch({
+    type: PROCESS_CROPPING_OF_IMAGES,
+    payload: { cropedImages, cropedFilesUrl },
+  });
 };
 
 export const setNewPostModalWindowWidth = (width) => {
   return { type: SET_NEW_POST_MODAL_WINDOW_WIDTH, payload: width };
+};
+
+export const resetModalState = () => {
+  return { type: RESET_MODAL_STATE };
+};
+
+export const postNewPost = () => async (dispatch, getState) => {
+  let cropedImages = getState().newPostModalState.cropedImages;
+  let cropedImagesBlobs = await Promise.all(
+    cropedImages.map(async (image) => await image.toBlob("image/png"))
+  );
+
+  let newPostFormData = new FormData();
+  newPostFormData.append("images", cropedImagesBlobs);
+
+  server.post(`${POST_BASE_ROUTE}`, newPostFormData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  dispatch({
+    type: POST_NEW_POST,
+  });
 };
