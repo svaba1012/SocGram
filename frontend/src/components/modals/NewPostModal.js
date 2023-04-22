@@ -18,7 +18,8 @@ import {
   processCroppingOfImages,
   setNewPostModalWindowWidth,
   resetModalState,
-} from "../../actions";
+  postNewPost,
+} from "../../actions/new-post-actions";
 import NewPostFormFinish from "../forms/NewPostForm/NewPostFormFinish";
 import QuitingNewPostModal from "./QuitingNewPostModal";
 
@@ -79,6 +80,8 @@ function NewPostModal(props) {
     processCroppingOfImages,
     setNewPostModalWindowWidth,
     resetModalState,
+    postNewPost,
+    user,
   } = props;
 
   let [isQuitingModalOpen, setIsQuitingModalOpen] = useState(false);
@@ -130,7 +133,7 @@ function NewPostModal(props) {
           selectedIndex={tabIndex}
           index={2}
           label={"Customise"}
-          moveOnNext={() => console.log("posting")}
+          moveOnNext={() => postNewPost(user.userId)}
           moveOnPrev={() => {
             setNewPostModalWindowWidth(400);
             setNewPostModalTab(1);
@@ -154,7 +157,7 @@ function NewPostModal(props) {
 }
 
 const mapState = (state) => {
-  return { modalState: state.newPostModalState };
+  return { modalState: state.newPostModalState, user: state.user };
 };
 
 export default connect(mapState, {
@@ -162,4 +165,5 @@ export default connect(mapState, {
   processCroppingOfImages,
   setNewPostModalWindowWidth,
   resetModalState,
+  postNewPost,
 })(NewPostModal);

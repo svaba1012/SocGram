@@ -13,7 +13,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { connect } from "react-redux";
 import ProfilePosts from "./components/profile/ProfilePosts";
 import ProfileSavedPosts from "./components/profile/ProfileSavedPosts";
-import { signInWithToken } from "./actions";
+import { signInWithToken } from "./actions/user-actions";
 
 function App(props) {
   const matches = useMediaQuery("(min-width:600px)");
@@ -50,6 +50,8 @@ function App(props) {
             <Route path="saved" element={<ProfileSavedPosts />}></Route>
             <Route path="tagged" element={<ProfilePosts isTagged />}></Route>
           </Route>
+          <Route path="/posts/:pid" element={<UserProfilePage />} />
+
           <Route path="/*" element={<Navigate to="/" replace />} />
         </Routes>
         {/* <Navigate to="/"></Navigate> */}

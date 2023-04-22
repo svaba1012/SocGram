@@ -1,6 +1,7 @@
 import {
   PROCESS_CROPPING_OF_IMAGES,
   RESET_MODAL_STATE,
+  SET_NEW_POST_DECRIPTION,
   SET_NEW_POST_IMAGES,
   SET_NEW_POST_IMAGES_ZOOM,
   SET_NEW_POST_IMAGE_ASPECT_RATIO,
@@ -17,8 +18,8 @@ const newPostReducer = (
     aspectRatio: "1/1",
     imageId: 0,
     cropedFilesUrl: [],
-    cropedImages: [],
     windowWidth: 400,
+    description: "",
   },
   action
 ) => {
@@ -45,6 +46,8 @@ const newPostReducer = (
       return { ...state, ...action.payload };
     case SET_NEW_POST_MODAL_WINDOW_WIDTH:
       return { ...state, windowWidth: action.payload };
+    case SET_NEW_POST_DECRIPTION:
+      return { ...state, description: action.payload };
     case RESET_MODAL_STATE:
       return {
         tabIndex: 0,

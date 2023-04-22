@@ -7,8 +7,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import { connect } from "react-redux";
-import ImageCarousel from "./ImageCarousel";
 import { TextField, Divider } from "@mui/material";
+import ImageCarousel from "./ImageCarousel";
+import { setNewPostModalDescription } from "../../../actions/new-post-actions";
 
 const aspectRatioValues = {
   "1/1": 1,
@@ -58,6 +59,8 @@ function NewPostFormFinish(props) {
           id="filled-textarea"
           label="Description of a post..."
           placeholder="Placeholder"
+          value={props.description}
+          onChange={(e) => props.setDescription(e.target.value)}
           multiline
           rows={6}
           sx={{ width: "100%" }}
@@ -71,7 +74,10 @@ const mapState = (state) => {
   return {
     imagesUrls: state.newPostModalState.cropedFilesUrl,
     aspectRatio: state.newPostModalState.aspectRatio,
+    description: state.newPostModalState.description,
   };
 };
 
-export default connect(mapState)(NewPostFormFinish);
+export default connect(mapState, {
+  setDescription: setNewPostModalDescription,
+})(NewPostFormFinish);

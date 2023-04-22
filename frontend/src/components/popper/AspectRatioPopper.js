@@ -8,7 +8,7 @@ import { Box, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import CustomNewPostPopper from "./CustomNewPostPopper";
 import { connect } from "react-redux";
 
-import { setNewPostImageAspectRatio } from "../../actions";
+import { setNewPostImageAspectRatio } from "../../actions/new-post-actions";
 
 function AspectRatioPopper({ style, aspectRatio, setAspectRatio, placement }) {
   const handleChange = (event, newAspectRatio) => {

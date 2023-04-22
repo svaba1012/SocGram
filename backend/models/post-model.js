@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema({
   description: { type: String },
   time: { type: Number, required: true },
   location: { type: String },
-  multimedias: [{ path: String }],
+  multimedias: [String],
   creator: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
   markedUsers: [{ type: mongoose.Types.ObjectId, required: true, ref: "User" }],
   likes: [{ type: mongoose.Types.ObjectId, required: true, ref: "User" }],

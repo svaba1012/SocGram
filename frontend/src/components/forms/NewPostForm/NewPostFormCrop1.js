@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import ScrollContainer from "react-indiana-drag-scroll";
 
 import AspectRatioPopper from "../../popper/AspectRatioPopper";
-import { setNewPostImageIndex, setNewPostImagesScroll } from "../../../actions";
+import { setNewPostImageIndex, setNewPostImagesScroll } from "../../../actions/new-post-actions";
 import ImageCarousel from "./ImageCarousel";
 
 const aspectRatioValues = {

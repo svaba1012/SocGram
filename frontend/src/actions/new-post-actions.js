@@ -1,10 +1,10 @@
 import server from "../config/server";
-import { cropImage } from "../utils/imageProcess";
+import { cropImage, dataURLtoFile } from "../utils/imageProcess";
 import {
-  GET_USER_PROFILE,
   POST_NEW_POST,
   PROCESS_CROPPING_OF_IMAGES,
   RESET_MODAL_STATE,
+  SET_NEW_POST_DECRIPTION,
   SET_NEW_POST_IMAGES,
   SET_NEW_POST_IMAGES_ZOOM,
   SET_NEW_POST_IMAGE_ASPECT_RATIO,
@@ -12,93 +12,9 @@ import {
   SET_NEW_POST_IMAGE_SCROLL,
   SET_NEW_POST_MODAL_TAB,
   SET_NEW_POST_MODAL_WINDOW_WIDTH,
-  SIGN_IN,
-  SIGN_UP,
 } from "./types";
 
-const USER_BASE_ROUTE = "/api/users";
 const POST_BASE_ROUTE = "/api/posts";
-
-export const signUp = (username, email, password) => async (dispatch) => {
-  let res;
-  try {
-    res = await server.post(`${USER_BASE_ROUTE}/signup`, {
-      username,
-      email,
-      password,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-
-  console.log(res);
-  dispatch({ type: SIGN_UP, payload: null });
-};
-
-let timeoutId;
-
-export const signIn = (usernameOrEmail, password) => async (dispatch) => {
-  let res;
-  try {
-    res = await server.post(`${USER_BASE_ROUTE}/signin`, {
-      usernameOrEmail,
-      password,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-
-  let user = res.data.user;
-  console.log(user);
-  let userData = {
-    userId: user._id,
-    username: user.username,
-    token: res.data.token,
-    expiresIn: new Date().getTime() + 60 * 60 * 1000,
-  };
-  if (res.status === 200) {
-    localStorage.setItem("userData", JSON.stringify(userData));
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    timeoutId = setTimeout(() => {
-      localStorage.removeItem("userData");
-      dispatch({ type: SIGN_IN, payload: null });
-    }, 60 * 60 * 1000);
-
-    dispatch({
-      type: SIGN_IN,
-      payload: userData,
-    });
-  }
-};
-
-export const signInWithToken = () => async (dispatch) => {
-  let userData = JSON.parse(localStorage.getItem("userData"));
-  if (userData.expiresIn < new Date().getTime()) {
-    dispatch({ type: SIGN_IN, payload: null });
-    localStorage.removeItem("userData");
-    return;
-  }
-  if (timeoutId) {
-    clearTimeout(timeoutId);
-  }
-  timeoutId = setTimeout(() => {
-    localStorage.removeItem("userData");
-    dispatch({ type: SIGN_IN, payload: null });
-  }, userData.expiresIn - new Date().getTime());
-
-  dispatch({ type: SIGN_IN, payload: userData });
-};
-
-export const getUserProfile = (username) => async (dispatch) => {
-  let res = await server.get(`${USER_BASE_ROUTE}/${username}`);
-  // PROVJERI
-
-  let profile = res.data;
-  dispatch({ type: GET_USER_PROFILE, payload: profile.user });
-};
 
 export const setNewPostModalTab = (tabIndex) => {
   return { type: SET_NEW_POST_MODAL_TAB, payload: tabIndex };
@@ -158,7 +74,7 @@ export const processCroppingOfImages = () => async (dispatch, getState) => {
   );
   dispatch({
     type: PROCESS_CROPPING_OF_IMAGES,
-    payload: { cropedImages, cropedFilesUrl },
+    payload: { cropedFilesUrl },
   });
 };
 
@@ -166,20 +82,34 @@ export const setNewPostModalWindowWidth = (width) => {
   return { type: SET_NEW_POST_MODAL_WINDOW_WIDTH, payload: width };
 };
 
+export const setNewPostModalDescription = (text) => {
+  return { type: SET_NEW_POST_DECRIPTION, payload: text };
+};
+
 export const resetModalState = () => {
   return { type: RESET_MODAL_STATE };
 };
 
-export const postNewPost = () => async (dispatch, getState) => {
-  let cropedImages = getState().newPostModalState.cropedImages;
-  let cropedImagesBlobs = await Promise.all(
-    cropedImages.map(async (image) => await image.toBlob("image/png"))
+export const postNewPost = (uid) => async (dispatch, getState) => {
+  let { cropedFilesUrl, description } = getState().newPostModalState;
+
+  let cropedImages = await Promise.all(
+    cropedFilesUrl.map(
+      async (imageUrl) => await dataURLtoFile(imageUrl, "filename")
+    )
   );
 
+  console.log(cropedImages);
   let newPostFormData = new FormData();
-  newPostFormData.append("images", cropedImagesBlobs);
+  cropedImages.forEach((image) => {
+    newPostFormData.append("images", image);
+    console.log(image);
+  });
 
-  server.post(`${POST_BASE_ROUTE}`, newPostFormData, {
+  newPostFormData.append("description", description);
+  newPostFormData.append("creator", uid);
+
+  let res = await server.post(`${POST_BASE_ROUTE}`, newPostFormData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 

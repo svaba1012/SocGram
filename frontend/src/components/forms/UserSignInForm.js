@@ -14,7 +14,7 @@ import Typography from "@mui/material/Typography";
 import { Paper } from "@mui/material";
 import { isByteLength } from "validator";
 
-import { signIn } from "../../actions";
+import { signIn } from "../../actions/user-actions";
 
 const validateFunctions = {
   usernameOrEmail: {

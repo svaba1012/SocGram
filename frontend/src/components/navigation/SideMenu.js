@@ -51,7 +51,7 @@ const menuItems = [
   {
     text: "Notification",
     icon: <FavoriteBorderIcon />,
-    to: "/",
+    to: "/posts",
     activeIcon: <FavoriteOutlinedIcon />,
   },
   {

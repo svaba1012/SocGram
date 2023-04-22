@@ -18,7 +18,7 @@ const postUpload = multer({
       const time = new Date().getTime();
       console.log("Filename");
       let uniqueSuffix = time + "-" + Math.round(Math.random() * 1e9);
-      cb(null, `image-${uniqueSuffix}`);
+      cb(null, `image-${uniqueSuffix}.${ext}`);
     },
   }),
   fileFilter: (req, file, cb) => {

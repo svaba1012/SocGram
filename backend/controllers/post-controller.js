@@ -10,7 +10,7 @@ const getPostById = async (req, res, next) => {
 
   let post;
   try {
-    post = await Post.findById(postId);
+    post = await Post.findById(postId).populate("creator");
   } catch (err) {
     console.log(err);
     return next(new HttpError("Can't connect to the database", 500));
@@ -20,11 +20,11 @@ const getPostById = async (req, res, next) => {
     return next(new HttpError("Post not found", 404));
   }
 
-  res.json(post);
+  res.json({ post });
 };
 
 const insertPost = async (req, res, next) => {
-  const { creator } = req.body;
+  const { creator, description } = req.body;
   let user;
 
   try {
@@ -37,12 +37,23 @@ const insertPost = async (req, res, next) => {
     return next(new HttpError("Wrong user", 422));
   }
 
-  console.log(req.files);
+  let imagesPaths = req.files.map((file) => file.path);
 
-  let post = new Post({ time: new Date().getTime(), creator });
+  if (description.length === 0) {
+    description = null;
+  }
 
-  //   FINISH...
-  // implement file uploading
+  let post = new Post({
+    time: new Date().getTime(),
+    creator,
+    description,
+    markedUsers: [],
+    multimedias: imagesPaths,
+    likes: [],
+  });
+
+  await post.save();
+
   res.json({ post });
 };
 
@@ -113,4 +124,21 @@ const deletePost = async (req, res, next) => {
   res.json({ delete: "Delete ok" });
 };
 
-module.exports = { getPostById, insertPost, likePost, deletePost };
+const getPosts = async (req, res, next) => {
+  let query = req.query;
+  let posts;
+
+  try {
+    posts = await Post.find(query);
+  } catch (err) {
+    return next(new HttpError("DB error", 500));
+  }
+
+  if (!posts) {
+    posts = [];
+  }
+
+  res.json({ posts: posts });
+};
+
+module.exports = { getPostById, getPosts, insertPost, likePost, deletePost };

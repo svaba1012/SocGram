@@ -93,6 +93,15 @@ const getUserProfile = async (req, res, next) => {
   res.json({ user: userProfile });
 };
 
+const getUserProfilesByIds = async (req, res, next) => {
+  let query = req.query;
+  let users;
+
+  console.log(query);
+
+  res.json({ users });
+};
+
 const changeProfilePicture = async (req, res, next) => {
   let userId = req.params.uid;
   let user;
@@ -103,6 +112,10 @@ const changeProfilePicture = async (req, res, next) => {
   }
   if (!user) {
     return next(new HttpError("Not found", 404));
+  }
+
+  if (user.profileImage) {
+    fs.unlink(user.profileImage, (err) => console.log(err));
   }
 
   user.profileImage = req.file.path;
@@ -265,6 +278,7 @@ module.exports = {
   signIn,
   signUp,
   getUserProfile,
+  getUserProfilesByIds,
   insertFollow,
   deleteFollow,
   getFollowsByUserId,

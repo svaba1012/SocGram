@@ -13,13 +13,12 @@ import { connect } from "react-redux";
 
 import SettingsModal from "../modals/SettingsModal";
 import ChangeProfileImageModal from "../modals/ChangeProfileImageModal";
+import server from "../../config/server";
 
 function ProfileHeader({ user }) {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isChangeProfileImageOpen, setIsChangeProfileImageOpen] =
     useState(false);
-
-  console.log(user);
 
   return (
     <div>
@@ -35,7 +34,9 @@ function ProfileHeader({ user }) {
         <Box sx={{ display: "flex", justifyContent: "center", width: "30%" }}>
           <Avatar
             alt={user.username}
-            src={user.profileImage ? user.profileImage : ""}
+            src={
+              user.profileImage ? `${server.getUri()}/${user.profileImage}` : ""
+            }
             sx={{ width: "10rem", height: "10rem", cursor: "pointer" }}
             onClick={() => setIsChangeProfileImageOpen(true)}
           ></Avatar>

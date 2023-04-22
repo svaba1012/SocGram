@@ -4,7 +4,7 @@ import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
 import { connect } from "react-redux";
 
-import { setNewPostImages } from "../../../actions";
+import { setNewPostImages } from "../../../actions/new-post-actions";
 
 function NewPostFormUpload(props) {
   const { moveOnNext } = props;

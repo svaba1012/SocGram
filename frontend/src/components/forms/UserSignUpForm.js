@@ -13,7 +13,7 @@ import { Paper } from "@mui/material";
 import { connect } from "react-redux";
 import { isByteLength, isEmail, isAlpha, equals } from "validator";
 
-import { signUp } from "../../actions";
+import { signUp } from "../../actions/user-actions";
 
 const validateFunctions = {
   username: {
