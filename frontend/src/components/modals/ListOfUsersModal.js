@@ -1,23 +1,22 @@
 import React from "react";
-import { Box, Modal } from "@mui/material";
+import { Box, Divider, List, Modal } from "@mui/material";
 
-import PostPage from "../pages/PostPage";
+import UserListItem from "../user/UserListItem";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "80vw",
+  width: 400,
   bgcolor: "background.paper",
 
-  height: "90vh",
   borderRadius: "10px",
   boxShadow: 24,
   outline: 0,
 };
 
-function ProfilePostModal({ open, handleClose }) {
+function ListOfUsersModal({ open, handleClose, header, users }) {
   return (
     <Modal
       open={open}
@@ -26,10 +25,16 @@ function ProfilePostModal({ open, handleClose }) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <PostPage></PostPage>
+        <List>
+          {header}
+          <Divider />
+          {users.map((user, id) => (
+            <UserListItem user={user} key={id} />
+          ))}
+        </List>
       </Box>
     </Modal>
   );
 }
 
-export default ProfilePostModal;
+export default ListOfUsersModal;

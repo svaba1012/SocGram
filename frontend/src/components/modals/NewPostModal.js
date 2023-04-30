@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+import { connect } from "react-redux";
 import {
   Box,
   Modal,
@@ -8,11 +10,10 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import React, { useState } from "react";
-import { connect } from "react-redux";
-
 import NewPostFormUpload from "../forms/NewPostForm/NewPostFormUpload";
-import NewPostFormCrop1 from "../forms/NewPostForm/NewPostFormCrop1";
+import NewPostFormCrop from "../forms/NewPostForm/NewPostFormCrop";
+import NewPostFormFinish from "../forms/NewPostForm/NewPostFormFinish";
+import QuitingNewPostModal from "./QuitingNewPostModal";
 import {
   setNewPostModalTab,
   processCroppingOfImages,
@@ -20,8 +21,6 @@ import {
   resetModalState,
   postNewPost,
 } from "../../actions/new-post-actions";
-import NewPostFormFinish from "../forms/NewPostForm/NewPostFormFinish";
-import QuitingNewPostModal from "./QuitingNewPostModal";
 
 const style = {
   position: "absolute",
@@ -127,7 +126,7 @@ function NewPostModal(props) {
           }}
           moveOnPrev={() => setNewPostModalTab(0)}
         >
-          <NewPostFormCrop1 moveOnNext={() => setNewPostModalTab(2)} />
+          <NewPostFormCrop moveOnNext={() => setNewPostModalTab(2)} />
         </ModalTab>
         <ModalTab
           selectedIndex={tabIndex}

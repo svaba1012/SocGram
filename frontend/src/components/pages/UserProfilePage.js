@@ -1,13 +1,14 @@
-import { Container } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { connect } from "react-redux";
+import { Container } from "@mui/material";
+
 import ProfileHeader from "../profile/ProfileHeader";
 import ProfileNaviagtion from "../profile/ProfileNavigation";
-import { getUserProfile } from "../../actions/user-actions";
 import ProfilePosts from "../profile/ProfilePosts";
 import ProfileSavedPosts from "../profile/ProfileSavedPosts";
 import ProfilePostModal from "../modals/ProfilePostModal";
+import { getUserProfile } from "../../actions/user-actions";
 
 const PAGE_TABS = [
   <ProfilePosts />,
@@ -20,13 +21,17 @@ function UserProfilePage({ getUserProfile, profile }) {
   let location = useLocation();
   let navigate = useNavigate();
   let isPostUrl = location.pathname.startsWith("/posts", 0);
+
   useEffect(() => {
     if (!isPostUrl) {
+      if (profile.username === username && profile.profilePosts) {
+        return;
+      }
       getUserProfile(username);
     }
   }, [username, getUserProfile, isPostUrl]);
 
-  if (!profile.username) {
+  if (!profile.username || (profile.username !== username && !isPostUrl)) {
     return <div></div>;
   }
   return (

@@ -1,5 +1,5 @@
-import { Modal } from "@mui/material";
 import React from "react";
+
 import CustomOptionModal from "./CustomOptionModal";
 
 function QuitingNewPostModal({ open, handleClose, quit }) {

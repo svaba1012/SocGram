@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, ListItem, List, ListItemText } from "@mui/material";
+import { connect } from "react-redux";
+import { Button, ListItem } from "@mui/material";
 import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 import SlideshowOutlinedIcon from "@mui/icons-material/SlideshowOutlined";
-import { connect } from "react-redux";
 
 import { setNewPostImages } from "../../../actions/new-post-actions";
 

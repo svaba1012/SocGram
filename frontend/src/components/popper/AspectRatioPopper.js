@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import AspectRatioIcon from "@mui/icons-material/AspectRatio";
 import CropSquareIcon from "@mui/icons-material/CropSquare";
 import Crop32Icon from "@mui/icons-material/Crop32";
@@ -6,8 +7,6 @@ import CropPortraitIcon from "@mui/icons-material/CropPortrait";
 import { Box, ToggleButtonGroup, ToggleButton } from "@mui/material";
 
 import CustomNewPostPopper from "./CustomNewPostPopper";
-import { connect } from "react-redux";
-
 import { setNewPostImageAspectRatio } from "../../actions/new-post-actions";
 
 function AspectRatioPopper({ style, aspectRatio, setAspectRatio, placement }) {

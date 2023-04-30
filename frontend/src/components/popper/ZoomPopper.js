@@ -1,10 +1,9 @@
 import React from "react";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
-
-import CustomNewPostPopper from "./CustomNewPostPopper";
 import { connect } from "react-redux";
 import { Slider, Box } from "@mui/material";
 
+import CustomNewPostPopper from "./CustomNewPostPopper";
 import { setNewPostImagesZoom } from "../../actions/new-post-actions";
 
 function ZoomPopper(props) {

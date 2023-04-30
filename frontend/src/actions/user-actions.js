@@ -1,6 +1,10 @@
 import server from "../config/server";
 import {
   CHANGE_PROFILE_IMAGE,
+  FOLLOW_USER,
+  GET_FOLLOWERS,
+  GET_FOLLOWING,
+  GET_USERS_WHO_LIKED,
   GET_USER_PROFILE,
   GET_USER_PROFILES_BY_IDS,
   REMOVE_PROFILE_IMAGE,
@@ -40,10 +44,10 @@ export const signIn = (usernameOrEmail, password) => async (dispatch) => {
   }
 
   let user = res.data.user;
-  console.log(user);
   let userData = {
     userId: user._id,
     username: user.username,
+    profileImage: user.profileImage,
     token: res.data.token,
     expiresIn: new Date().getTime() + 60 * 60 * 1000,
   };
@@ -67,8 +71,12 @@ export const signIn = (usernameOrEmail, password) => async (dispatch) => {
 
 export const signInWithToken = () => async (dispatch) => {
   let userData = JSON.parse(localStorage.getItem("userData"));
+  if (!userData || !userData.expiresIn) {
+    dispatch({ type: SIGN_IN, payload: { isLoaded: true } });
+    return;
+  }
   if (userData.expiresIn < new Date().getTime()) {
-    dispatch({ type: SIGN_IN, payload: null });
+    dispatch({ type: SIGN_IN, payload: { isLoaded: true } });
     localStorage.removeItem("userData");
     return;
   }
@@ -77,10 +85,10 @@ export const signInWithToken = () => async (dispatch) => {
   }
   timeoutId = setTimeout(() => {
     localStorage.removeItem("userData");
-    dispatch({ type: SIGN_IN, payload: null });
+    dispatch({ type: SIGN_IN, payload: { isLoaded: true } });
   }, userData.expiresIn - new Date().getTime());
 
-  dispatch({ type: SIGN_IN, payload: userData });
+  dispatch({ type: SIGN_IN, payload: { ...userData, isLoaded: true } });
 };
 
 export const getUserProfile = (username) => async (dispatch) => {
@@ -88,15 +96,60 @@ export const getUserProfile = (username) => async (dispatch) => {
   // PROVJERI
 
   let profile = res.data;
-  dispatch({ type: GET_USER_PROFILE, payload: profile.user });
+  dispatch({
+    type: GET_USER_PROFILE,
+    payload: { ...profile.user, postCount: profile.postCount },
+  });
 };
 
-export const getUserProfilesByIds = (ids) => async (dispatch) => {
+export const getUserProfilesByIds = (ids, type) => async (dispatch) => {
+  if (ids.length === 0) {
+    dispatch({
+      type: GET_USER_PROFILES_BY_IDS,
+      payload: { users: [], type },
+    });
+    return;
+  }
   let queryObj = { users: ids };
   let queryObjJson = JSON.stringify(queryObj);
   let res = await server.get(`${USER_BASE_ROUTE}?users=${queryObjJson}`);
 
-  dispatch({ type: GET_USER_PROFILES_BY_IDS, payload: res.data.users });
+  dispatch({
+    type: GET_USER_PROFILES_BY_IDS,
+    payload: { users: res.data.users, type },
+  });
+};
+
+const getUsersByIds = async (ids, type) => {
+  if (ids.length === 0) {
+    return {
+      type: type,
+      payload: [],
+    };
+  }
+  let queryObj = { users: ids };
+  let queryObjJson = JSON.stringify(queryObj);
+  let res = await server.get(`${USER_BASE_ROUTE}?users=${queryObjJson}`);
+
+  return {
+    type: type,
+    payload: res.data.users,
+  };
+};
+
+export const getUsersWhoLiked = (ids) => async (dispatch) => {
+  let dispatchObject = await getUsersByIds(ids, GET_USERS_WHO_LIKED);
+  console.log(dispatchObject);
+  dispatch(dispatchObject);
+};
+
+export const getFollowers = (ids) => async (dispatch) => {
+  let dispatchObject = await getUsersByIds(ids, GET_FOLLOWERS);
+  dispatch(dispatchObject);
+};
+export const getFollowing = (ids) => async (dispatch) => {
+  let dispatchObject = await getUsersByIds(ids, GET_FOLLOWING);
+  dispatch(dispatchObject);
 };
 
 export const removeProfileImage = (uid) => async (dispatch) => {
@@ -117,4 +170,12 @@ export const changeProfileImage = (uid, file) => async (dispatch) => {
     { headers: { "Content-Type": "multipart/form-data" } }
   );
   dispatch({ type: CHANGE_PROFILE_IMAGE, payload: res.data.imageUrl });
+};
+
+export const followUser = (uid, followedId) => async (dispatch) => {
+  let res = await server.post(`${USER_BASE_ROUTE}/${uid}/follows`, {
+    followedId,
+  });
+
+  dispatch({ type: FOLLOW_USER, payload: res.data.userId });
 };

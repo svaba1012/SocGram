@@ -16,7 +16,7 @@ userRoutes.post(
 
 userRoutes.delete("/:uid/profileImage", userController.removeProfilePicture);
 
-userRoutes.get("/");
+userRoutes.get("/", userController.getUserProfilesByIds);
 userRoutes.get("/:username", userController.getUserProfile);
 
 userRoutes.post("/:uid/follows", userController.insertFollow);

@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { useTheme } from "@mui/material/styles";
-import { Grid } from "@mui/material";
 import { connect } from "react-redux";
 import ScrollContainer from "react-indiana-drag-scroll";
+import { Grid } from "@mui/material";
 
 import AspectRatioPopper from "../../popper/AspectRatioPopper";
-import { setNewPostImageIndex, setNewPostImagesScroll } from "../../../actions/new-post-actions";
-import ImageCarousel from "./ImageCarousel";
+import ImageCarousel from "../../reusables/ImageCarousel";
+import {
+  setNewPostImageIndex,
+  setNewPostImagesScroll,
+} from "../../../actions/new-post-actions";
 
 const aspectRatioValues = {
   "1/1": 1,
@@ -14,7 +16,7 @@ const aspectRatioValues = {
   "16/9": 16 / 9,
 };
 
-function NewPostFormCrop1({
+function NewPostFormCrop({
   files,
   aspectRatio,
   imageId,
@@ -150,4 +152,4 @@ const mapState = (state) => {
 export default connect(mapState, {
   setNewPostImageIndex,
   setNewPostImagesScroll,
-})(NewPostFormCrop1);
+})(NewPostFormCrop);

@@ -1,11 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import CollectionsIcon from "@mui/icons-material/Collections";
 
-import "./PostProfile.css";
 import server from "../../config/server";
-import { Link, useNavigate } from "react-router-dom";
+import "./PostProfile.css";
 
 function PostProfile({ post, isTagged }) {
   const navigate = useNavigate();

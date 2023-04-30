@@ -1,14 +1,17 @@
+import React from "react";
+import { connect } from "react-redux";
 import {
   Avatar,
   Box,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  TextField,
+  Divider,
 } from "@mui/material";
-import React from "react";
-import { connect } from "react-redux";
-import { TextField, Divider } from "@mui/material";
-import ImageCarousel from "./ImageCarousel";
+
+import ImageCarousel from "../../reusables/ImageCarousel";
+import server from "../../../config/server";
 import { setNewPostModalDescription } from "../../../actions/new-post-actions";
 
 const aspectRatioValues = {
@@ -51,9 +54,12 @@ function NewPostFormFinish(props) {
       <Box sx={{ width: "50%", padding: "10px" }}>
         <ListItem>
           <ListItemAvatar>
-            <Avatar alt="Alo"></Avatar>
+            <Avatar
+              alt={props.user.username}
+              src={`${server.getUri()}/${props.user.profileImage}`}
+            ></Avatar>
           </ListItemAvatar>
-          <ListItemText primary="username" />
+          <ListItemText primary={props.user.username} />
         </ListItem>
         <TextField
           id="filled-textarea"
@@ -72,6 +78,7 @@ function NewPostFormFinish(props) {
 
 const mapState = (state) => {
   return {
+    user: state.user,
     imagesUrls: state.newPostModalState.cropedFilesUrl,
     aspectRatio: state.newPostModalState.aspectRatio,
     description: state.newPostModalState.description,

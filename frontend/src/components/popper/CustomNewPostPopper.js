@@ -1,5 +1,5 @@
 import React from "react";
-import { Popper, Box, Fab, Popover } from "@mui/material";
+import { Fab, Popover } from "@mui/material";
 
 function CustomNewPostPopper(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);

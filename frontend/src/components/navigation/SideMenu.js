@@ -22,6 +22,7 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 
 import SideMenuItem from "./SideMenuItem";
 import NewPostModal from "../modals/NewPostModal";
+import server from "../../config/server";
 
 const menuItems = [
   {
@@ -79,6 +80,10 @@ function SideMenu(props) {
   let profileId = menuItems.findIndex((el) => el.text === "Profile");
   menuItems[newPostId].onClick = () => setIsNewPostModalOpen(true);
   menuItems[profileId].to = `/profile/${props.user.username}`;
+  menuItems[profileId].avatarUrl = `${server.getUri()}/${
+    props.user.profileImage
+  }`;
+
   let match = useMediaQuery("(min-width:1250px)");
   let drawerWidth = match ? drawerDesktopWidth : drawerMidWidth;
   return (

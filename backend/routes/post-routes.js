@@ -11,5 +11,6 @@ PostRoutes.post("/", postUpload.array("images"), postController.insertPost);
 PostRoutes.delete("/:pid", postController.deletePost);
 
 PostRoutes.post("/:pid/likes", postController.likePost);
+PostRoutes.delete("/:pid/likes/:uid", postController.removePostLike);
 
 module.exports = PostRoutes;

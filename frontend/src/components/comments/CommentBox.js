@@ -1,7 +1,9 @@
-import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
+import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+
 import server from "../../config/server";
+import { formatDateDistanceFromNow } from "../../utils/dateFunctions";
 
 function CommentBox({ comment }) {
   return (
@@ -25,7 +27,7 @@ function CommentBox({ comment }) {
             {comment.text}
           </span>
         }
-        secondary={comment.time}
+        secondary={formatDateDistanceFromNow(comment.time)}
       ></ListItemText>
     </ListItem>
   );

@@ -1,3 +1,6 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import {
   Avatar,
   Box,
@@ -7,83 +10,132 @@ import {
   Typography,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 import SettingsModal from "../modals/SettingsModal";
 import ChangeProfileImageModal from "../modals/ChangeProfileImageModal";
+import OtherUserSettingsModal from "../modals/OtherUserSettingsModal";
 import server from "../../config/server";
+import { followUser } from "../../actions/user-actions";
 
-function ProfileHeader({ user }) {
+function ProfileHeader({ profile, user, followUser }) {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isChangeProfileImageOpen, setIsChangeProfileImageOpen] =
     useState(false);
 
+  const isMyProfile = profile._id === user.userId;
+  const isFollowedByMe = profile.followers.includes(user.userId);
   return (
     <div>
-      <SettingsModal
-        open={isSettingsModalOpen}
-        handleClose={() => setIsSettingsModalOpen(false)}
-      />
-      <ChangeProfileImageModal
-        open={isChangeProfileImageOpen}
-        handleClose={() => setIsChangeProfileImageOpen(false)}
-      />
+      {isMyProfile ? (
+        <>
+          <SettingsModal
+            open={isSettingsModalOpen}
+            handleClose={() => setIsSettingsModalOpen(false)}
+          />
+          <ChangeProfileImageModal
+            open={isChangeProfileImageOpen}
+            handleClose={() => setIsChangeProfileImageOpen(false)}
+          />
+        </>
+      ) : (
+        <OtherUserSettingsModal
+          open={isSettingsModalOpen}
+          handleClose={() => setIsSettingsModalOpen(false)}
+        />
+      )}
       <Box sx={{ display: "flex" }}>
         <Box sx={{ display: "flex", justifyContent: "center", width: "30%" }}>
           <Avatar
-            alt={user.username}
+            alt={profile.username}
             src={
-              user.profileImage ? `${server.getUri()}/${user.profileImage}` : ""
+              profile.profileImage
+                ? `${server.getUri()}/${profile.profileImage}`
+                : ""
             }
             sx={{ width: "10rem", height: "10rem", cursor: "pointer" }}
-            onClick={() => setIsChangeProfileImageOpen(true)}
+            onClick={() => {
+              if (isMyProfile) {
+                setIsChangeProfileImageOpen(true);
+              }
+            }}
           ></Avatar>
         </Box>
         <Box sx={{ marginLeft: "30px" }}>
           <Box sx={{ display: "flex", gap: "15px" }}>
-            <Typography variant="h5">KIme</Typography>
-            <Button variant="contained" color="info">
-              Change Profile
-            </Button>
-            <IconButton onClick={() => setIsSettingsModalOpen(true)}>
-              <SettingsIcon />
-            </IconButton>
+            <Typography variant="h5">{profile.username}</Typography>
+            {isMyProfile ? (
+              <>
+                <Button variant="contained" color="info">
+                  Change Profile
+                </Button>
+                <IconButton onClick={() => setIsSettingsModalOpen(true)}>
+                  <SettingsIcon />
+                </IconButton>
+              </>
+            ) : (
+              <>
+                {isFollowedByMe ? (
+                  <>
+                    <Button variant="contained" color="info">
+                      Following
+                    </Button>
+                    <Button variant="contained" color="info">
+                      Send Message
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={() => followUser(user.userId, profile._id)}
+                  >
+                    Follow
+                  </Button>
+                )}
+
+                <IconButton onClick={() => setIsSettingsModalOpen(true)}>
+                  <MoreHorizIcon />
+                </IconButton>
+              </>
+            )}
           </Box>
           <Box sx={{ display: "flex", gap: "15px" }}>
             <Typography variant="h6">
               {" "}
               <Typography variant="span" sx={{ fontWeight: "bold" }}>
-                13
+                {profile.postCount}
               </Typography>{" "}
               posts
             </Typography>
             <Typography
               variant="h6"
               component={Link}
-              to="/"
+              to="./followers"
               sx={{ textDecoration: "none", color: "inherit" }}
             >
               <Typography variant="span" sx={{ fontWeight: "bold" }}>
-                13
+                {profile.followers.length}
               </Typography>{" "}
               followers
             </Typography>
             <Typography
               variant="h6"
               component={Link}
-              to="/"
+              to="./following"
               sx={{ textDecoration: "none", color: "inherit" }}
             >
               <Typography variant="span" sx={{ fontWeight: "bold" }}>
-                13
+                {profile.follows.length}
               </Typography>{" "}
               following
             </Typography>
           </Box>
           <Box sx={{ display: "flex" }}>
-            <Typography variant="h6">Prezime i ime</Typography>
+            <Typography variant="h6">
+              {profile.firstName ? profile.firstName : ""}{" "}
+              {profile.lastName ? profile.lastName : ""}
+            </Typography>
           </Box>
         </Box>
       </Box>
@@ -93,7 +145,7 @@ function ProfileHeader({ user }) {
 }
 
 const mapState = (state) => {
-  return { user: state.profile };
+  return { profile: state.profile, user: state.user };
 };
 
-export default connect(mapState, {})(ProfileHeader);
+export default connect(mapState, { followUser })(ProfileHeader);

@@ -91,7 +91,44 @@ const likePost = async (req, res, next) => {
     return next(new HttpError("Can't connect to the database", 500));
   }
 
-  res.json({ post });
+  res.json({ like: userId });
+};
+
+const removePostLike = async (req, res, next) => {
+  let { uid, pid } = req.params;
+
+  let post;
+  try {
+    post = await Post.findById(pid);
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("Can't connect to the database", 500));
+  }
+
+  if (!post) {
+    return next(new HttpError("Can't find that post", 404));
+  }
+  let user;
+  try {
+    user = await User.findById(uid);
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("Can't connect to the database", 500));
+  }
+
+  if (!user) {
+    return next(new HttpError("No user", 422));
+  }
+
+  try {
+    post.likes.pull(uid);
+
+    await post.save();
+  } catch (error) {
+    return next(new HttpError("DB error", 500));
+  }
+
+  res.json({ like: uid }).status(202);
 };
 
 const deletePost = async (req, res, next) => {
@@ -141,4 +178,11 @@ const getPosts = async (req, res, next) => {
   res.json({ posts: posts });
 };
 
-module.exports = { getPostById, getPosts, insertPost, likePost, deletePost };
+module.exports = {
+  getPostById,
+  getPosts,
+  insertPost,
+  likePost,
+  deletePost,
+  removePostLike,
+};

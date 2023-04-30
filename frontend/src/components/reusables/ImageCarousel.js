@@ -1,11 +1,10 @@
 import React, { cloneElement, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Box, MobileStepper, Fab } from "@mui/material";
-
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
-import ZoomPopper from "../../popper/ZoomPopper";
+import ZoomPopper from "../popper/ZoomPopper";
 
 function ImageCarousel(props) {
   const [activeImage, setActiveImage] = useState(0);

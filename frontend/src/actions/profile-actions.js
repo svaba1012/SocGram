@@ -9,13 +9,16 @@ import {
 const USER_BASE_ROUTE = "/api/users";
 const POST_BASE_ROUTE = "/api/posts";
 
-export const getUserProfile = (username) => async (dispatch) => {
-  let res = await server.get(`${USER_BASE_ROUTE}/${username}`);
-  // PROVJERI
+// export const getUserProfile = (username) => async (dispatch) => {
+//   let res = await server.get(`${USER_BASE_ROUTE}/${username}`);
+//   // PROVJERI
 
-  let profile = res.data;
-  dispatch({ type: GET_USER_PROFILE, payload: profile.user });
-};
+//   let profile = res.data;
+//   dispatch({
+//     type: GET_USER_PROFILE,
+//     payload: { ...profile.user, postCount: profile.postCount },
+//   });
+// };
 
 export const removeProfileImage = (uid) => async (dispatch) => {
   let res = await server.delete(`${USER_BASE_ROUTE}/${uid}/profileImage`);

@@ -28,11 +28,21 @@ function SideMenuItem({
       onClick={handleClick}
     >
       <ListItem key={text} disablePadding>
-        <ListItemButton sx={{ display: "flex", justifyContent: "center" }}>
+        <ListItemButton
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            paddingLeft: avatarUrl ? "10px" : "16px",
+          }}
+        >
           {isWideScreen && icon ? <ListItemIcon>{icon}</ListItemIcon> : ""}
           {isWideScreen && avatarUrl ? (
             <ListItemAvatar>
-              <Avatar alt="Profile Image" src={avatarUrl} />
+              <Avatar
+                alt="Profile Image"
+                src={avatarUrl}
+                sx={{ width: 36, height: 36 }}
+              />
             </ListItemAvatar>
           ) : (
             ""

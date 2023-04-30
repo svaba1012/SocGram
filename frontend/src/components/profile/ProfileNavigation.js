@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Tabs, Tab } from "@mui/material";
 import { Link } from "react-router-dom";
+import { Box, Tabs, Tab } from "@mui/material";
 
 function LinkTab(props) {
   return (

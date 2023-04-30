@@ -1,0 +1,93 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+import server from "../../config/server";
+import StopFollowingModal from "../modals/StopFollowingModal";
+
+const theme = createTheme({
+  palette: {
+    neutral: {
+      main: "#CCCCCC",
+      light: "#EEEEEE",
+      dark: "#999999",
+      contrastText: "#000",
+    },
+  },
+});
+
+function UserListItem({ user }) {
+  let [isStopFollowingModalOpen, setIsStopFollowingModalOpen] = useState(false);
+
+  const isFollowedByMe = true;
+  return (
+    <>
+      <StopFollowingModal
+        user={user}
+        open={isStopFollowingModalOpen}
+        handleClose={() => setIsStopFollowingModalOpen(false)}
+      />
+      <Link
+        to={`/profile/${user.username}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar
+              src={`${server.getUri()}/${user.profileImage}`}
+              alt={user.username}
+            ></Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={<span style={{ fontWeight: 700 }}>{user.username}</span>}
+            secondary={
+              user.firstName
+                ? user.firstName
+                : " " + user.lastName
+                ? user.lastName
+                : ""
+            }
+          />
+
+          {!isFollowedByMe ? (
+            <Button
+              variant="contained"
+              sx={{
+                marginLeft: "auto",
+              }}
+              onClick={() => {}}
+            >
+              Follow
+            </Button>
+          ) : (
+            <ThemeProvider theme={theme}>
+              <Button
+                variant="contained"
+                sx={{
+                  marginLeft: "auto",
+                }}
+                color="neutral"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsStopFollowingModalOpen(true);
+                }}
+              >
+                Already following
+              </Button>
+            </ThemeProvider>
+          )}
+        </ListItem>
+      </Link>
+    </>
+  );
+}
+
+export default UserListItem;

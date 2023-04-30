@@ -1,7 +1,9 @@
 import {
   CHANGE_PROFILE_IMAGE,
+  FOLLOW_USER,
   GET_PROFILE_POSTS,
   GET_USER_PROFILE,
+  GET_USER_PROFILES_BY_IDS,
   REMOVE_PROFILE_IMAGE,
 } from "../actions/types";
 
@@ -15,6 +17,17 @@ const profileReducer = (state = {}, action) => {
       return { ...state, profileImage: action.payload };
     case GET_PROFILE_POSTS:
       return { ...state, profilePosts: action.payload };
+    case FOLLOW_USER:
+      let followers = [...state.follows, action.payload];
+      return { ...state, followers };
+    case GET_USER_PROFILES_BY_IDS:
+      if (action.payload.type === "follows") {
+        return { ...state, followsUsers: action.payload.users };
+      } else if (action.payload.type === "followers") {
+        return { ...state, followersUsers: action.payload.users };
+      } else {
+        return { ...state };
+      }
     default:
       return { ...state };
   }

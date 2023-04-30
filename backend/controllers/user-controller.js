@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 
 const User = require("../models/user-model");
+const Post = require("../models/post-model");
 const HttpError = require("../models/httpError");
 
 const signIn = async (req, res, next) => {
@@ -88,16 +89,48 @@ const getUserProfile = async (req, res, next) => {
     return next(new HttpError("User don't exist"));
   }
 
+  let postCount = 0;
+  try {
+    postCount = await Post.aggregate([
+      {
+        $match: {
+          creator: userProfile._id,
+        },
+      },
+      {
+        $count: "count",
+      },
+    ]);
+  } catch (err) {
+    return next(new HttpError("DB error"), 500);
+  }
+
+  // console.log(postCount);
   userProfile.password = null;
 
-  res.json({ user: userProfile });
+  res.json({ user: userProfile, postCount: postCount[0].count });
 };
 
 const getUserProfilesByIds = async (req, res, next) => {
   let query = req.query;
-  let users;
 
-  console.log(query);
+  if (!query.users) {
+    return next(new HttpError("Not found", 404));
+  }
+  let users;
+  let ids = JSON.parse(query.users).users;
+
+  console.log(ids);
+
+  try {
+    users = await User.find({ _id: { $in: ids } });
+  } catch (error) {
+    return next("DB error", 500);
+  }
+
+  if (!users) {
+    return next(new HttpError("Not found", 404));
+  }
 
   res.json({ users });
 };
@@ -184,7 +217,7 @@ const insertFollow = async (req, res, next) => {
     return next(new HttpError("Following failed...", 500));
   }
 
-  res.json({ follower: followerUser, followed: followedUser });
+  res.json({ userId });
 };
 
 const deleteFollow = async (req, res, next) => {
@@ -219,7 +252,7 @@ const deleteFollow = async (req, res, next) => {
     return next(new HttpError("Unfollow failed...", 500));
   }
 
-  res.json({ follower: followerUser, followed: followedUser });
+  res.json({ userId }).status(202);
 };
 
 const getFollowsByUserId = async (req, res, next) => {

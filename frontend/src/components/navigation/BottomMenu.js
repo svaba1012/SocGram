@@ -9,7 +9,6 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import TelegramIcon from "@mui/icons-material/Telegram";
-// import { FavoriteIcon, ArchiveIcon } from "@mui/icons-material";
 
 function BottomMenu(props) {
   const [value, setValue] = React.useState(0);

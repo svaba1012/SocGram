@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
+import { connect } from "react-redux";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { Box } from "@mui/material";
 
@@ -10,9 +11,11 @@ import UserMainPage from "./components/pages/UserMainPage";
 import UserProfilePage from "./components/pages/UserProfilePage";
 import UserAuthPage from "./components/pages/UserAuthPage";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { connect } from "react-redux";
 import ProfilePosts from "./components/profile/ProfilePosts";
 import ProfileSavedPosts from "./components/profile/ProfileSavedPosts";
+import LikedByModal from "./components/modals/LikedByModal";
+import FollowsModal from "./components/modals/FollowsModal";
+import FollowersModal from "./components/modals/FollowersModal";
 import { signInWithToken } from "./actions/user-actions";
 
 function App(props) {
@@ -22,7 +25,11 @@ function App(props) {
     props.signInWithToken();
   }, []);
 
-  if (!props.user || !props.user.token) {
+  if (!props.user || !props.user.isLoaded) {
+    return;
+  }
+
+  if (!props.user.token) {
     return (
       <div>
         <BrowserRouter>
@@ -46,11 +53,16 @@ function App(props) {
           <Route path="/explore" element={<UserExplorePage />}></Route>
           <Route path="/chat/inbox" element={<UserChatPage />}></Route>
           <Route path="/profile/:username" element={<UserProfilePage />}>
-            <Route path="" element={<ProfilePosts />}></Route>
+            <Route path="" element={<ProfilePosts />}>
+              <Route path="following" element={<FollowsModal />}></Route>
+              <Route path="followers" element={<FollowersModal />}></Route>
+            </Route>
             <Route path="saved" element={<ProfileSavedPosts />}></Route>
             <Route path="tagged" element={<ProfilePosts isTagged />}></Route>
           </Route>
-          <Route path="/posts/:pid" element={<UserProfilePage />} />
+          <Route path="/posts/:pid" element={<UserProfilePage />}>
+            <Route path="liked_by" element={<LikedByModal />} />
+          </Route>
 
           <Route path="/*" element={<Navigate to="/" replace />} />
         </Routes>

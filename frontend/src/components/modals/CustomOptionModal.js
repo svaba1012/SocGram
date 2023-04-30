@@ -1,7 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Box,
-  Divider,
   IconButton,
   List,
   ListItem,
@@ -10,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Link } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -33,6 +32,7 @@ function CustomOptionModal({
   withCancel,
   withCloseBtn,
   options = [],
+  customHeader,
 }) {
   return (
     <Modal
@@ -56,6 +56,7 @@ function CustomOptionModal({
           ""
         )}
         <List>
+          {customHeader ? customHeader : ""}
           {headerText ? (
             <ListItem divider>
               <ListItemText
@@ -77,12 +78,13 @@ function CustomOptionModal({
             " "
           )}
 
-          {options.map((option) => {
+          {options.map((option, id) => {
             let itemJsx = (
               <ListItem
                 button
                 divider
                 onClick={option.onClick ? option.onClick : () => {}}
+                key={id}
               >
                 <Typography
                   sx={{
@@ -106,6 +108,7 @@ function CustomOptionModal({
                 <Link
                   to={option.to}
                   style={{ textDecoration: "none", color: "inherit" }}
+                  key={id}
                 >
                   {itemJsx}
                 </Link>

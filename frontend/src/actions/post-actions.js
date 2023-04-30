@@ -1,5 +1,10 @@
 import server from "../config/server";
-import { GET_POST_BY_ID, GET_PROFILE_POSTS } from "./types";
+import {
+  GET_POST_BY_ID,
+  GET_PROFILE_POSTS,
+  LIKE_POST,
+  REMOVE_POST_LIKE,
+} from "./types";
 
 const POST_BASE_ROUTE = "/api/posts";
 
@@ -16,4 +21,17 @@ export const getPostById = (pid) => async (dispatch) => {
   let res = await server.get(`${POST_BASE_ROUTE}/${pid}`);
 
   dispatch({ type: GET_POST_BY_ID, payload: res.data.post });
+};
+
+export const likePost = (pid, uid) => async (dispatch) => {
+  let res = await server.post(`${POST_BASE_ROUTE}/${pid}/likes`, {
+    userId: uid,
+  });
+
+  dispatch({ type: LIKE_POST, payload: res.data.like });
+};
+
+export const removePostLike = (pid, uid) => async (dispatch) => {
+  let res = await server.delete(`${POST_BASE_ROUTE}/${pid}/likes/${uid}`);
+  dispatch({ type: REMOVE_POST_LIKE, payload: res.data.like });
 };
