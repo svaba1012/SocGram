@@ -7,6 +7,7 @@ import {
   GET_USERS_WHO_LIKED,
   GET_USER_PROFILE,
   GET_USER_PROFILES_BY_IDS,
+  GET_USER_PROFILE_LOADING,
   REMOVE_PROFILE_IMAGE,
   SIGN_IN,
   SIGN_UP,
@@ -92,6 +93,9 @@ export const signInWithToken = () => async (dispatch) => {
 };
 
 export const getUserProfile = (username) => async (dispatch) => {
+  dispatch({
+    type: GET_USER_PROFILE_LOADING,
+  });
   let res = await server.get(`${USER_BASE_ROUTE}/${username}`);
   // PROVJERI
 

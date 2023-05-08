@@ -95,7 +95,7 @@ function SideMenu(props) {
       <Box role="presentation" sx={{ width: drawerWidth - 10 }}>
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Typography variant="h3" sx={{ textAlign: "center" }}>
-            {match ? "SocGram" : <ListIcon />}
+            {match ? "InstaSoc" : <ListIcon />}
           </Typography>
         </Link>
 

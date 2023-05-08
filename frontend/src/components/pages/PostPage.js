@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { Box, Divider } from "@mui/material";
+import { Box, CircularProgress, Container, Divider } from "@mui/material";
 
 import ImageCarousel from "../reusables/ImageCarousel";
 import PostCreatorBox from "../posts/PostCreatorBox";
@@ -13,20 +13,51 @@ import server from "../../config/server";
 
 import { getPostById } from "../../actions/post-actions";
 
-function PostPage({ post, getPostById }) {
+function PostPage({ post, getPostById, outsideModal }) {
   let { pid } = useParams();
   let navigate = useNavigate();
   useEffect(() => {
     getPostById(pid);
-  }, []);
+  }, [pid]);
+
+  if (post.isLoading) {
+    return (
+      <Container
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "inherit",
+        }}
+      >
+        <CircularProgress size={100} thickness={4} />
+      </Container>
+    );
+  }
 
   // console.log(post.likes);
   if (!post.multimedias) {
     return;
   }
 
+  let outsideModalStyle = outsideModal
+    ? {
+        margin: "20px",
+        border: "2px solid grey",
+        borderTopRightRadius: "10px",
+        borderBottomRightRadius: "10px",
+      }
+    : {};
   return (
-    <Box sx={{ display: "flex", height: "inherit" }}>
+    <Box
+      sx={{
+        display: "flex",
+        height: "inherit",
+        flexGrow: 1,
+        maxHeight: "88vh",
+        ...outsideModalStyle,
+      }}
+    >
       {/* Liked by modal */}
       <Outlet
         context={{

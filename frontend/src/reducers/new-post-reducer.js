@@ -41,6 +41,7 @@ const newPostReducer = (
       let files1 = [...state.files];
       const { imageIndex, scroll } = action.payload;
       files1[imageIndex].scroll = scroll;
+
       return { ...state, files: files1 };
     case PROCESS_CROPPING_OF_IMAGES:
       return { ...state, ...action.payload };

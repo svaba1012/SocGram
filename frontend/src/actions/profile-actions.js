@@ -2,6 +2,7 @@ import server from "../config/server";
 import {
   CHANGE_PROFILE_IMAGE,
   GET_PROFILE_POSTS,
+  GET_PROFILE_POSTS_LOADING,
   GET_USER_PROFILE,
   REMOVE_PROFILE_IMAGE,
 } from "./types";
@@ -38,13 +39,4 @@ export const changeProfileImage = (uid, file) => async (dispatch) => {
     { headers: { "Content-Type": "multipart/form-data" } }
   );
   dispatch({ type: CHANGE_PROFILE_IMAGE, payload: res.data.imageUrl });
-};
-
-export const getProfilePosts = () => async (dispatch, getState) => {
-  let uid = getState().profile._id;
-  let res = await server.get(`${POST_BASE_ROUTE}`, {
-    params: { creator: uid },
-  });
-
-  dispatch({ type: GET_PROFILE_POSTS, payload: res.data.posts });
 };

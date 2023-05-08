@@ -19,8 +19,25 @@ const getPostById = async (req, res, next) => {
   if (!post) {
     return next(new HttpError("Post not found", 404));
   }
+  let numOfComments;
+  try {
+    numOfComments = await Comment.aggregate([
+      {
+        $match: {
+          postId: post._id,
+        },
+      },
 
-  res.json({ post });
+      { $count: "num" },
+    ]);
+  } catch (err) {
+    return next(new HttpError("Post not found", 404));
+  }
+
+  res.json({
+    post,
+    numOfComments: numOfComments[0] ? numOfComments[0].num : 0,
+  });
 };
 
 const insertPost = async (req, res, next) => {
@@ -64,7 +81,6 @@ const likePost = async (req, res, next) => {
   try {
     post = await Post.findById(postId);
   } catch (err) {
-    console.log(err);
     return next(new HttpError("Can't connect to the database", 500));
   }
 
@@ -165,9 +181,28 @@ const getPosts = async (req, res, next) => {
   let query = req.query;
   let posts;
 
+  let creator = query.creator;
+
   try {
-    posts = await Post.find(query);
+    posts = await Post.aggregate([
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "postId",
+          as: "comments",
+        },
+      },
+      { $addFields: { numOfComments: { $size: "$comments" } } },
+      { $unset: ["comments"] },
+      {
+        $match: {
+          creator: new mongoose.Types.ObjectId(creator),
+        },
+      },
+    ]);
   } catch (err) {
+    console.log(err);
     return next(new HttpError("DB error", 500));
   }
 

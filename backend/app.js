@@ -24,7 +24,14 @@ app.use(
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/posts/:pid/comments", commentRoutes);
+app.use(
+  "/api/posts/:pid/comments",
+  (req, res, next) => {
+    req.pid = req.params.pid;
+    next();
+  },
+  commentRoutes
+);
 
 app.use((error, req, res, next) => {
   if (req.file) {

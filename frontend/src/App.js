@@ -17,6 +17,7 @@ import LikedByModal from "./components/modals/LikedByModal";
 import FollowsModal from "./components/modals/FollowsModal";
 import FollowersModal from "./components/modals/FollowersModal";
 import { signInWithToken } from "./actions/user-actions";
+import PostPage from "./components/pages/PostPage";
 
 function App(props) {
   const matches = useMediaQuery("(min-width:600px)");
@@ -44,7 +45,7 @@ function App(props) {
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", minHeight: "95vh" }}>
       <BrowserRouter>
         {matches ? <SideMenu /> : ""}
 
@@ -60,7 +61,16 @@ function App(props) {
             <Route path="saved" element={<ProfileSavedPosts />}></Route>
             <Route path="tagged" element={<ProfilePosts isTagged />}></Route>
           </Route>
-          <Route path="/posts/:pid" element={<UserProfilePage />}>
+          <Route
+            path="/posts/:pid"
+            element={
+              props.isFromProfile ? (
+                <UserProfilePage />
+              ) : (
+                <PostPage outsideModal />
+              )
+            }
+          >
             <Route path="liked_by" element={<LikedByModal />} />
           </Route>
 
@@ -74,7 +84,7 @@ function App(props) {
 }
 
 const mapState = (state) => {
-  return { user: state.user };
+  return { user: state.user, isFromProfile: state.post.isEnteredFromProfile };
 };
 
 export default connect(mapState, { signInWithToken })(App);

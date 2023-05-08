@@ -7,7 +7,7 @@ import CollectionsIcon from "@mui/icons-material/Collections";
 import server from "../../config/server";
 import "./PostProfile.css";
 
-function PostProfile({ post, isTagged }) {
+function PostProfile({ post, isTagged, handleOnClick }) {
   const navigate = useNavigate();
   return (
     <div
@@ -18,6 +18,7 @@ function PostProfile({ post, isTagged }) {
         cursor: "pointer",
       }}
       onClick={() => {
+        handleOnClick();
         navigate(`/posts/${post._id}`);
       }}
     >
@@ -64,7 +65,7 @@ function PostProfile({ post, isTagged }) {
               opacity: 1,
             }}
           >
-            <ModeCommentIcon /> <span> 23</span>
+            <ModeCommentIcon /> <span> {post.numOfComments}</span>
           </div>
         </div>
       )}

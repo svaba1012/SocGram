@@ -120,8 +120,6 @@ const getUserProfilesByIds = async (req, res, next) => {
   let users;
   let ids = JSON.parse(query.users).users;
 
-  console.log(ids);
-
   try {
     users = await User.find({ _id: { $in: ids } });
   } catch (error) {

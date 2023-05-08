@@ -1,14 +1,27 @@
 import server from "../config/server";
 import {
   GET_POST_BY_ID,
+  GET_POST_BY_ID_LOADING,
   GET_PROFILE_POSTS,
+  GET_PROFILE_POSTS_LOADING,
   LIKE_POST,
   REMOVE_POST_LIKE,
+  SET_POST_ENTERED_FROM_PROFILE,
 } from "./types";
 
 const POST_BASE_ROUTE = "/api/posts";
 
+// export const getProfilePosts = () => async (dispatch, getState) => {
+//   let uid = getState().profile._id;
+//   let res = await server.get(`${POST_BASE_ROUTE}`, {
+//     params: { creator: uid },
+//   });
+
+//   dispatch({ type: GET_PROFILE_POSTS, payload: res.data.posts });
+// };
+
 export const getProfilePosts = () => async (dispatch, getState) => {
+  dispatch({ type: GET_PROFILE_POSTS_LOADING });
   let uid = getState().profile._id;
   let res = await server.get(`${POST_BASE_ROUTE}`, {
     params: { creator: uid },
@@ -18,9 +31,13 @@ export const getProfilePosts = () => async (dispatch, getState) => {
 };
 
 export const getPostById = (pid) => async (dispatch) => {
+  dispatch({ type: GET_POST_BY_ID_LOADING });
   let res = await server.get(`${POST_BASE_ROUTE}/${pid}`);
 
-  dispatch({ type: GET_POST_BY_ID, payload: res.data.post });
+  dispatch({
+    type: GET_POST_BY_ID,
+    payload: { ...res.data.post, numOfComments: res.data.numOfComments },
+  });
 };
 
 export const likePost = (pid, uid) => async (dispatch) => {
@@ -34,4 +51,8 @@ export const likePost = (pid, uid) => async (dispatch) => {
 export const removePostLike = (pid, uid) => async (dispatch) => {
   let res = await server.delete(`${POST_BASE_ROUTE}/${pid}/likes/${uid}`);
   dispatch({ type: REMOVE_POST_LIKE, payload: res.data.like });
+};
+
+export const setPostEnteredFromProfile = (isEnteredFromProfile) => {
+  return { type: SET_POST_ENTERED_FROM_PROFILE, payload: isEnteredFromProfile };
 };
