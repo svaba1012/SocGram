@@ -1,5 +1,7 @@
 import server from "../config/server";
 import {
+  GET_POSTS_OF_FOLLOWS,
+  GET_POSTS_OF_FOLLOWS_LOADING,
   GET_POST_BY_ID,
   GET_POST_BY_ID_LOADING,
   GET_PROFILE_POSTS,
@@ -26,8 +28,15 @@ export const getProfilePosts = () => async (dispatch, getState) => {
   let res = await server.get(`${POST_BASE_ROUTE}`, {
     params: { creator: uid },
   });
-
   dispatch({ type: GET_PROFILE_POSTS, payload: res.data.posts });
+};
+
+export const getPostsOfFollows = (uid) => async (dispatch) => {
+  dispatch({ type: GET_POSTS_OF_FOLLOWS_LOADING });
+  let res = await server.get(`${POST_BASE_ROUTE}`, {
+    params: { uid: uid },
+  });
+  dispatch({ type: GET_POSTS_OF_FOLLOWS, payload: res.data.posts });
 };
 
 export const getPostById = (pid) => async (dispatch) => {

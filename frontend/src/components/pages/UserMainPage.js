@@ -1,8 +1,18 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
+import PostList from "../posts/PostList";
 
-function UserMainPage(props) {
-  return <Box component="main">Main Page</Box>;
+function UserMainPage({ userId }) {
+  return (
+    <Container component="main" sx={{ display: "flex" }}>
+      <Box sx={{ flexGrow: 1 }}>
+        <Container>
+          <PostList userId={userId} />
+        </Container>
+      </Box>
+      <Box sx={{ width: "30%" }}>Maybe you know</Box>
+    </Container>
+  );
 }
 
 export default UserMainPage;

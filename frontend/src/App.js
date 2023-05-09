@@ -50,7 +50,10 @@ function App(props) {
         {matches ? <SideMenu /> : ""}
 
         <Routes>
-          <Route path="/" element={<UserMainPage />}></Route>
+          <Route
+            path="/"
+            element={<UserMainPage userId={props.user.userId} />}
+          ></Route>
           <Route path="/explore" element={<UserExplorePage />}></Route>
           <Route path="/chat/inbox" element={<UserChatPage />}></Route>
           <Route path="/profile/:username" element={<UserProfilePage />}>

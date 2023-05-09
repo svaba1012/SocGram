@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import mainPageReducer from "./mainPage-reducer";
 import newCommentReducer from "./new-comment-reducer";
 import newPostReducer from "./new-post-reducer";
 import postReducer from "./post-reducer";
@@ -12,6 +13,7 @@ const reducers = {
   profile: profileReducer,
   post: postReducer,
   newComment: newCommentReducer,
+  mainPage: mainPageReducer,
 };
 
 export default combineReducers(reducers);
