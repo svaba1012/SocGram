@@ -6,6 +6,7 @@ import postReducer from "./post-reducer";
 import profileReducer from "./profile-reducer";
 
 import userReducer from "./user-reducer";
+import userSuggestionsReducer from "./userSuggestions-reducer";
 
 const reducers = {
   user: userReducer,
@@ -14,6 +15,7 @@ const reducers = {
   post: postReducer,
   newComment: newCommentReducer,
   mainPage: mainPageReducer,
+  userSuggestions: userSuggestionsReducer,
 };
 
 export default combineReducers(reducers);

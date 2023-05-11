@@ -11,14 +11,14 @@ import {
 
 import server from "../../config/server";
 
-function PostCreatorBox({ post }) {
+function PostCreatorBox({ post, withoutPadding }) {
   return (
     <Box sx={{ width: "100%" }}>
       <Link
         to={`/profile/${post.creator.username}`}
         style={{ textDecoration: "none", color: "inherit" }}
       >
-        <ListItem>
+        <ListItem sx={{ paddingLeft: withoutPadding ? "0px" : "" }}>
           <ListItemAvatar>
             <Avatar
               src={`${server.getUri()}/${post.creator.profileImage}`}

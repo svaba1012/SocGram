@@ -4,6 +4,8 @@ import {
   FOLLOW_USER,
   GET_FOLLOWERS,
   GET_FOLLOWING,
+  GET_SUGGESTIONS_FOR_USER,
+  GET_SUGGESTIONS_FOR_USER_LOADING,
   GET_USERS_WHO_LIKED,
   GET_USER_PROFILE,
   GET_USER_PROFILES_BY_IDS,
@@ -182,4 +184,13 @@ export const followUser = (uid, followedId) => async (dispatch) => {
   });
 
   dispatch({ type: FOLLOW_USER, payload: res.data.userId });
+};
+
+export const getSuggestionsForUser = (uid) => async (dispatch) => {
+  dispatch({ type: GET_SUGGESTIONS_FOR_USER_LOADING });
+  let res = await server.get(`${USER_BASE_ROUTE}`, {
+    params: { suggestFor: uid },
+  });
+
+  dispatch({ type: GET_SUGGESTIONS_FOR_USER, payload: res.data.suggestions });
 };

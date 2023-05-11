@@ -105,10 +105,77 @@ const getUserProfile = async (req, res, next) => {
     return next(new HttpError("DB error"), 500);
   }
 
+  let count =
+    postCount && postCount[0] && postCount[0].count ? postCount[0].count : 0;
   // console.log(postCount);
   userProfile.password = null;
 
-  res.json({ user: userProfile, postCount: postCount[0].count });
+  res.json({ user: userProfile, postCount: count });
+};
+
+const getSuggestionsForUser = async (req, res, next) => {
+  let userId = req.query.suggestFor;
+  let user;
+  try {
+    user = await User.findById(userId).populate("follows");
+  } catch (err) {
+    return next(new HttpError("DB error", 500));
+  }
+  if (!user) {
+    return next(new HttpError("DB error", 404));
+  }
+  let occurances = {};
+  let alreadyFollowing = {};
+  user.follows.forEach((follow) => {
+    alreadyFollowing[follow._id] = true;
+  });
+  alreadyFollowing[userId] = true;
+  user.follows.forEach((follow) => {
+    follow.follows.forEach((uid) => {
+      if (occurances[uid]) {
+        occurances[uid].num++;
+      } else if (uid != userId && !alreadyFollowing[uid]) {
+        occurances[uid] = {};
+        occurances[uid].num = 1;
+        occurances[uid].oneFollower = follow;
+      }
+    });
+  });
+
+  let ids = Object.keys(occurances);
+  let values = Object.values(occurances);
+  let suggestionsIds = ids.map((id, index) => {
+    return { id: id, ...values[index] };
+  });
+  suggestionsIds = suggestionsIds.sort((obj1, obj2) => obj2.num - obj1.num);
+  suggestionsIds = suggestionsIds.filter((suggestion, i) => i < 5);
+  let suggestions;
+  try {
+    let ids = suggestionsIds.map((sug) => new mongoose.Types.ObjectId(sug.id));
+    suggestions = await User.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: ids,
+          },
+        },
+      },
+      { $addFields: { __order: { $indexOfArray: [ids, "$_id"] } } },
+      { $sort: { __order: 1 } },
+    ]);
+  } catch (err) {
+    return next(new HttpError("DB error", 500));
+  }
+  if (!suggestions) {
+    suggestions = [];
+  }
+  // console.log(suggestions);
+  // greska
+  let suggestionsFull = suggestionsIds.map((sugId, i) => {
+    return { ...sugId, user: suggestions[i] };
+  });
+
+  res.json({ suggestions: suggestionsFull });
 };
 
 const getUserProfilesByIds = async (req, res, next) => {
@@ -131,6 +198,14 @@ const getUserProfilesByIds = async (req, res, next) => {
   }
 
   res.json({ users });
+};
+
+const getUsers = async (req, res, next) => {
+  if (req.query.users) {
+    await getUserProfilesByIds(req, res, next);
+  } else if (req.query.suggestFor) {
+    await getSuggestionsForUser(req, res, next);
+  }
 };
 
 const changeProfilePicture = async (req, res, next) => {
@@ -309,7 +384,7 @@ module.exports = {
   signIn,
   signUp,
   getUserProfile,
-  getUserProfilesByIds,
+  getUsers,
   insertFollow,
   deleteFollow,
   getFollowsByUserId,

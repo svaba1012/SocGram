@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   Avatar,
@@ -11,37 +10,27 @@ import {
 } from "@mui/material";
 
 import server from "../../config/server";
-import { getUsersWhoLiked } from "../../actions/user-actions";
 
-function PostNumberOfLikes({ post, getUsersWhoLiked }) {
-  useEffect(() => {
-    // getUserProfilesByIds(
-    //   post.likes.filter((el, id) => id < 3),
-    //   "likedBy"
-    // );
-    getUsersWhoLiked(post.likes.filter((el, id) => id < 3));
-  }, []);
-
-  if (!post.likedBy) {
-    return;
+function PostNumberOfLikes({ post }) {
+  if (!post.likes) {
+    return <div></div>;
   }
-
   return (
     <Box>
-      <ListItem>
-        <ListItemAvatar>
-          <AvatarGroup>
-            {post.likedBy.map((user, id) => (
-              <Avatar
-                src={`${server.getUri()}/${user.profileImage}`}
-                alt={user.username}
-                sx={{ width: 24, height: 24 }}
-                key={id}
-              ></Avatar>
-            ))}
-          </AvatarGroup>
-        </ListItemAvatar>
-        {post.likedBy.length > 0 ? (
+      <ListItem sx={{ paddingLeft: "0px", paddingTop: "0px" }}>
+        {/* <ListItemAvatar> */}
+        <AvatarGroup>
+          {post.likes.map((user, id) => (
+            <Avatar
+              src={`${server.getUri()}/${user.profileImage}`}
+              alt={user.username}
+              sx={{ width: 24, height: 24 }}
+              key={id}
+            ></Avatar>
+          ))}
+        </AvatarGroup>
+        {/* </ListItemAvatar> */}
+        {post.numOfLikes > 0 ? (
           <ListItemText
             primary={
               <span>
@@ -52,11 +41,11 @@ function PostNumberOfLikes({ post, getUsersWhoLiked }) {
                     color: "inherit",
                     textDecoration: "none",
                   }}
-                  to={`/profile/${post.likedBy[0].username}`}
+                  to={`/profile/${post.likes[0].username}`}
                 >
-                  {post.likedBy[0].username}
+                  {post.likes[0].username}
                 </Link>
-                {post.likes.length > 0 ? (
+                {post.numOfLikes > 1 ? (
                   <span>
                     {" "}
                     and{" "}
@@ -68,7 +57,7 @@ function PostNumberOfLikes({ post, getUsersWhoLiked }) {
                       }}
                       to="./liked_by"
                     >
-                      {post.likes.length - 1} more
+                      {post.numOfLikes - 1} more
                     </Link>
                   </span>
                 ) : (
@@ -85,4 +74,4 @@ function PostNumberOfLikes({ post, getUsersWhoLiked }) {
   );
 }
 
-export default connect(null, { getUsersWhoLiked })(PostNumberOfLikes);
+export default PostNumberOfLikes;

@@ -10,7 +10,22 @@ const getPostById = async (req, res, next) => {
 
   let post;
   try {
-    post = await Post.findById(postId).populate("creator");
+    post = await Post.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(postId) } },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "postId",
+          as: "comments",
+        },
+      },
+      { $addFields: { numOfComments: { $size: "$comments" } } },
+      { $addFields: { numOfLikes: { $size: "$likes" } } },
+      { $unset: ["comments"] },
+    ]);
+    await Post.populate(post, { path: "creator" });
+    await Post.populate(post, { path: "likes", limit: 3 });
   } catch (err) {
     console.log(err);
     return next(new HttpError("Can't connect to the database", 500));
@@ -19,24 +34,9 @@ const getPostById = async (req, res, next) => {
   if (!post) {
     return next(new HttpError("Post not found", 404));
   }
-  let numOfComments;
-  try {
-    numOfComments = await Comment.aggregate([
-      {
-        $match: {
-          postId: post._id,
-        },
-      },
-
-      { $count: "num" },
-    ]);
-  } catch (err) {
-    return next(new HttpError("Post not found", 404));
-  }
 
   res.json({
-    post,
-    numOfComments: numOfComments[0] ? numOfComments[0].num : 0,
+    post: post[0],
   });
 };
 
@@ -177,12 +177,8 @@ const deletePost = async (req, res, next) => {
   res.json({ delete: "Delete ok" });
 };
 
-const getPosts = async (req, res, next) => {
-  let query = req.query;
+const getProfilePosts = async (req, res, next, creator) => {
   let posts;
-
-  let creator = query.creator;
-
   try {
     posts = await Post.aggregate([
       {
@@ -211,6 +207,66 @@ const getPosts = async (req, res, next) => {
   }
 
   res.json({ posts: posts });
+};
+
+const getPostsOfUserFollowers = async (req, res, next, userId) => {
+  let page = req.query.page;
+  const POST_LIMIT = 5;
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    return next(new HttpError("DB error", 500));
+  }
+
+  if (!user) {
+    return next(new HttpError("Not found", 404));
+  }
+
+  let posts;
+  try {
+    posts = await Post.aggregate([
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "postId",
+          as: "comments",
+        },
+      },
+      { $addFields: { numOfComments: { $size: "$comments" } } },
+      { $addFields: { numOfLikes: { $size: "$likes" } } },
+      { $unset: ["comments"] },
+      { $match: { creator: { $in: user.follows } } },
+
+      { $sort: { time: -1 } },
+      { $limit: POST_LIMIT },
+      // { $skip: page * POST_LIMIT },
+    ]);
+
+    await Post.populate(posts, { path: "creator" });
+    await Post.populate(posts, { path: "likes", perDocumentLimit: 3 });
+  } catch (err) {
+    return next(new HttpError("DB error", 500));
+  }
+
+  if (!posts) {
+    posts = [];
+  }
+
+  res.json({ posts });
+};
+
+const getPosts = async (req, res, next) => {
+  let query = req.query;
+  let creator = query.creator;
+  let uid = query.uid;
+
+  if (creator) {
+    await getProfilePosts(req, res, next, creator);
+  } else if (uid) {
+    await getPostsOfUserFollowers(req, res, next, uid);
+  }
 };
 
 module.exports = {

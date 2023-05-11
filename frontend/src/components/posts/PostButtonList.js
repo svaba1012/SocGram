@@ -9,31 +9,43 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 
 import { likePost, removePostLike } from "../../actions/post-actions";
 
-function PostButtonList({ post, likePost, removePostLike, user }) {
+function PostButtonList({
+  post,
+  likePost,
+  removePostLike,
+  user,
+  withoutPadding,
+}) {
   if (!post.likes) {
     return <div></div>;
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", padding: withoutPadding ? "0px" : "8px" }}>
       {post.likes.lenght === 0 || post.likes.includes(user.userId) ? (
-        <IconButton onClick={() => removePostLike(post._id, user.userId)}>
-          <FavoriteRoundedIcon sx={{ color: "red" }} />
+        <IconButton
+          onClick={() => removePostLike(post._id, user.userId)}
+          sx={{ paddingLeft: withoutPadding ? "0px" : "8px" }}
+        >
+          <FavoriteRoundedIcon sx={{ color: "red", fontSize: "1.3em" }} />
         </IconButton>
       ) : (
-        <IconButton onClick={() => likePost(post._id, user.userId)}>
-          <FavoriteBorderRoundedIcon />
+        <IconButton
+          onClick={() => likePost(post._id, user.userId)}
+          sx={{ paddingLeft: withoutPadding ? "0px" : "8px" }}
+        >
+          <FavoriteBorderRoundedIcon sx={{ fontSize: "1.3em" }} />
         </IconButton>
       )}
 
       <IconButton>
-        <ChatBubbleOutlineRoundedIcon />
+        <ChatBubbleOutlineRoundedIcon sx={{ fontSize: "1.3em" }} />
       </IconButton>
       <IconButton>
-        <SendRoundedIcon />
+        <SendRoundedIcon sx={{ fontSize: "1.3em" }} />
       </IconButton>
       <IconButton sx={{ marginLeft: "auto" }}>
-        <BookmarkBorderRoundedIcon />
+        <BookmarkBorderRoundedIcon sx={{ fontSize: "1.3em" }} />
       </IconButton>
     </Box>
   );

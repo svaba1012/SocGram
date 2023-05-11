@@ -45,7 +45,7 @@ export const getPostById = (pid) => async (dispatch) => {
 
   dispatch({
     type: GET_POST_BY_ID,
-    payload: { ...res.data.post, numOfComments: res.data.numOfComments },
+    payload: res.data.post,
   });
 };
 
