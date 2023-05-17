@@ -77,7 +77,24 @@ const signUp = async (req, res, next) => {
 
 const getUserProfile = async (req, res, next) => {
   let { username } = req.params;
+  let {uid} = req.query;
   let userProfile;
+  if(uid){
+    
+    try {
+      userProfile = await User.findById(uid).select({username: 1, firstName: 1, lastName: 1, profileImage: 1}).exec();
+    } catch (error) {
+      console.log(error);
+      return next(new HttpError("Can't connect to the database", 500));
+    }
+  
+    if (!userProfile) {
+      return next(new HttpError("User don't exist"));
+    }
+  res.json({ user: userProfile});
+    return;
+  }
+
   try {
     userProfile = await User.findOne({ username: username });
   } catch (error) {
