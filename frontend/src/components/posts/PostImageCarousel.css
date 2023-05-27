@@ -1,0 +1,25 @@
+@keyframes myAnim {
+	0% {
+		transform: scale(0) ;
+        
+	}
+
+	100% {
+		transform: scale(1) ;
+	}
+}
+
+.like-icon{
+    /* position: absolute; */
+    font-size: 0em !important; 
+    /* left: 50%; */
+    /* top: 50%; */
+    z-index: 100;
+    /* transition: font 0.3s ease-out !important; */
+    color: white;
+}
+
+.like-icon-scale{
+    font-size: 6em !important; 
+    animation: myAnim 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0s 2 alternate both;
+}

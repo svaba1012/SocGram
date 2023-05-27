@@ -1,4 +1,4 @@
-import { SIGN_UP, SIGN_IN } from "../actions/types";
+import { SIGN_UP, SIGN_IN, GET_CURRENT_USER_INFO } from "../actions/types";
 
 const userReducer = (state = null, action) => {
   switch (action.type) {
@@ -6,6 +6,8 @@ const userReducer = (state = null, action) => {
       return action.payload;
     case SIGN_IN:
       return action.payload;
+    case GET_CURRENT_USER_INFO:
+      return {...state, ...action.payload};
     default:
       return { ...state };
   }

@@ -6,8 +6,8 @@ import { ListItem, ListItemText, Typography } from "@mui/material";
 import ListOfUsersModal from "./ListOfUsersModal";
 import { getUserProfilesByIds } from "../../actions/user-actions";
 
-function FollowsModal({ users, getUserProfilesByIds }) {
-  let { open, handleClose, userIds } = useOutletContext();
+function FollowsModal({ users, getUserProfilesByIds, userIds }) {
+  let { open, handleClose } = useOutletContext();
   useEffect(() => {
     getUserProfilesByIds(userIds, "follows");
   }, []);
@@ -44,7 +44,7 @@ function FollowsModal({ users, getUserProfilesByIds }) {
 }
 
 const mapState = (state) => {
-  return { users: state.profile.followsUsers };
+  return { users: state.profile.followsUsers, userIds: state.profile.follows };
 };
 
 export default connect(mapState, { getUserProfilesByIds })(FollowsModal);

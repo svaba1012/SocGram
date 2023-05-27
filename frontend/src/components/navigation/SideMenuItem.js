@@ -22,6 +22,7 @@ function SideMenuItem({
 }) {
   icon = isActive ? activeIcon : icon;
   return (
+
     <Link
       to={to}
       style={{ textDecoration: "none", color: "inherit" }}
@@ -39,7 +40,7 @@ function SideMenuItem({
           {isWideScreen && avatarUrl ? (
             <ListItemAvatar>
               <Avatar
-                alt="Profile Image"
+                alt={to.split("/")[2].toUpperCase()}
                 src={avatarUrl}
                 sx={{ width: 36, height: 36 }}
               />

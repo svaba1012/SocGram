@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import {
   Avatar,
@@ -8,11 +8,14 @@ import {
   ListItemText,
   TextField,
   Divider,
+  Fab,
 } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
 
 import ImageCarousel from "../../reusables/ImageCarousel";
 import server from "../../../config/server";
 import { setNewPostModalDescription } from "../../../actions/new-post-actions";
+import MarkUserPopover from "../../popper/MarkUserPopover";
 
 const aspectRatioValues = {
   "1/1": 1,
@@ -21,6 +24,8 @@ const aspectRatioValues = {
 };
 
 function NewPostFormFinish(props) {
+  let [isMarkedVisible, setIsMarkedVisible] = useState(true);
+
   if (!props.imagesUrls || props.imagesUrls.length === 0) {
     return <div></div>;
   }
@@ -36,15 +41,44 @@ function NewPostFormFinish(props) {
       <Box sx={{ width: "50%" }}>
         <ImageCarousel
           tabsNum={props.imagesUrls.length}
-          additionalComponents={[]}
+          additionalComponents={[
+            <Fab
+              sx={{
+                position: "absolute",
+                bottom: "20px",
+                left: "10px",
+                zIndex: 50,
+              }}
+              aria-describedby={"Proba"}
+              type="button"
+              onClick={() => {
+                setIsMarkedVisible(!isMarkedVisible);
+              }}
+              size="small"
+            >
+              {" "}
+              <PersonIcon />{" "}
+            </Fab>,
+          ]}
         >
           {props.imagesUrls.map((url, id) => (
-            <Box sx={imageStyle} key={id}>
-              <img
-                src={url}
-                alt="slika"
-                style={{ width: "100%", height: "100%" }}
-              ></img>
+            <Box
+              sx={{ ...imageStyle, cursor: "crosshair" }}
+              key={id}
+              onClick={() => {}}
+            >
+              <MarkUserPopover
+                style={{ width: "80%" }}
+                imageId={id}
+                isVisible={isMarkedVisible}
+                setIsVisible={(isVis) => setIsMarkedVisible(isVis)}
+              >
+                <img
+                  src={url}
+                  alt="slika"
+                  style={{ width: "100%", height: "100%" }}
+                ></img>
+              </MarkUserPopover>
             </Box>
           ))}
         </ImageCarousel>

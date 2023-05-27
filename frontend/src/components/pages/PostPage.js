@@ -12,6 +12,7 @@ import PostAddComment from "../posts/PostAddComment";
 import server from "../../config/server";
 
 import { getPostById } from "../../actions/post-actions";
+import PostImageCarousel from "../posts/PostImageCarousel";
 
 function PostPage({ post, getPostById, outsideModal }) {
   let { pid } = useParams();
@@ -66,21 +67,8 @@ function PostPage({ post, getPostById, outsideModal }) {
           userIds: post.likes,
         }}
       />
-      <Box sx={{ height: "inherit", aspectRatio: "1/1" }}>
-        <ImageCarousel
-          tabsNum={post.multimedias.length}
-          additionalComponents={[]}
-        >
-          {post.multimedias.map((url, id) => (
-            <img
-              style={{ height: "100%" }}
-              src={`${server.getUri()}/${url}`}
-              alt="Slika"
-              key={id}
-            ></img>
-          ))}
-        </ImageCarousel>
-      </Box>
+      <PostImageCarousel post={post} />
+     
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <PostCreatorBox post={post} />
         <PostCommentList post={post} style={{ flexGrow: 1 }} />

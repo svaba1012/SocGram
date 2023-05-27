@@ -15,7 +15,6 @@ function StopFollowingModal({ open, handleClose, user }) {
         <>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Avatar
-              alt={user.username}
               src={`${server.getUri()}/${user.profileImage}`}
               sx={{ width: 100, height: 100 }}
             ></Avatar>

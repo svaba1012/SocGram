@@ -217,11 +217,31 @@ const getUserProfilesByIds = async (req, res, next) => {
   res.json({ users });
 };
 
+const searchUsers = async (req, res, next) => {
+  let searchText = req.query.search;
+  let users;
+  try{
+    users = await User.find({});
+    console.log("Implement user search");
+  }catch(err){
+    return next(new HttpError("DB error", 500));
+  }
+
+  if(!users){
+    users = [];
+  }
+
+  res.json({users});
+}
+
 const getUsers = async (req, res, next) => {
+  console.log(req.query);
   if (req.query.users) {
     await getUserProfilesByIds(req, res, next);
   } else if (req.query.suggestFor) {
     await getSuggestionsForUser(req, res, next);
+  }else if(req.query.search){
+    await searchUsers(req, res, next)
   }
 };
 

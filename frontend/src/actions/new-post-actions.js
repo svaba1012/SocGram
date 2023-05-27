@@ -9,6 +9,7 @@ import {
   SET_NEW_POST_IMAGES_ZOOM,
   SET_NEW_POST_IMAGE_ASPECT_RATIO,
   SET_NEW_POST_IMAGE_INDEX,
+  SET_NEW_POST_IMAGE_PIXEL_WIDTH,
   SET_NEW_POST_IMAGE_SCROLL,
   SET_NEW_POST_MODAL_TAB,
   SET_NEW_POST_MODAL_WINDOW_WIDTH,
@@ -90,8 +91,40 @@ export const resetModalState = () => {
   return { type: RESET_MODAL_STATE };
 };
 
+// export const setImageWidth = (width) => {
+//   return { type: SET_NEW_POST_IMAGE_PIXEL_WIDTH, payload: width };
+// };
+
+const aspectRatioValues = {
+  "1/1": 1,
+  "4/5": 0.8,
+  "16/9": 16 / 9,
+};
+
 export const postNewPost = (uid) => async (dispatch, getState) => {
-  let { cropedFilesUrl, description } = getState().newPostModalState;
+  let { cropedFilesUrl, description, aspectRatio } =
+    getState().newPostModalState;
+  let aspect = aspectRatioValues[aspectRatio];
+  let WIDTH_OF_IMAGE;
+  let HEIGHT_OF_IMAGE;
+  if (aspect > 1) {
+    WIDTH_OF_IMAGE = 400;
+    HEIGHT_OF_IMAGE = WIDTH_OF_IMAGE / aspect;
+  } else {
+    HEIGHT_OF_IMAGE = 400;
+    WIDTH_OF_IMAGE = HEIGHT_OF_IMAGE * aspect;
+  }
+  let taggedUsers = getState().taggedUsers.map((tagged) => {
+    return {
+      userId: tagged.user._id,
+      // username: tagged.username,
+      imageId: tagged.imageId,
+      position: {
+        x: tagged.position.x / WIDTH_OF_IMAGE,
+        y: tagged.position.y / HEIGHT_OF_IMAGE,
+      },
+    };
+  });
 
   let cropedImages = await Promise.all(
     cropedFilesUrl.map(
@@ -108,6 +141,7 @@ export const postNewPost = (uid) => async (dispatch, getState) => {
 
   newPostFormData.append("description", description);
   newPostFormData.append("creator", uid);
+  newPostFormData.append("tagged", JSON.stringify(taggedUsers));
 
   let res = await server.post(`${POST_BASE_ROUTE}`, newPostFormData, {
     headers: { "Content-Type": "multipart/form-data" },

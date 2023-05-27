@@ -4,6 +4,8 @@ import {
   GET_POSTS_OF_FOLLOWS_LOADING,
   GET_POST_BY_ID,
   GET_POST_BY_ID_LOADING,
+  GET_PROFILE_MARKED_POSTS,
+  GET_PROFILE_MARKED_POSTS_LOADING,
   GET_PROFILE_POSTS,
   GET_PROFILE_POSTS_LOADING,
   LIKE_POST,
@@ -29,6 +31,17 @@ export const getProfilePosts = () => async (dispatch, getState) => {
     params: { creator: uid },
   });
   dispatch({ type: GET_PROFILE_POSTS, payload: res.data.posts });
+};
+
+export const getProfileMarkedPosts = () => async (dispatch, getState) => {
+  dispatch({ type: GET_PROFILE_MARKED_POSTS_LOADING });
+  let uid = getState().profile._id;
+  console.log("Marked");
+  let res = await server.get(`${POST_BASE_ROUTE}`, {
+    params: { muid: uid },
+  });
+  console.log(res.data.posts);
+  dispatch({ type: GET_PROFILE_MARKED_POSTS, payload: res.data.posts });
 };
 
 export const getPostsOfFollows = (uid) => async (dispatch) => {

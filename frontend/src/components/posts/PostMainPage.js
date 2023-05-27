@@ -8,28 +8,16 @@ import ImageCarousel from "../reusables/ImageCarousel";
 import PostButtonList from "./PostButtonList";
 import PostNumberOfLikes from "./PostNumberOfLikes";
 import PostAddComment from "./PostAddComment";
+import PostImageCarousel from "./PostImageCarousel";
 
 function PostMainPage({ post }) {
   return (
     <Box sx={{ width: "80vh", marginBottom: "20px" }}>
       <PostCreatorBox post={post} withoutPadding />
-      <Box sx={{ height: "80vh", aspectRatio: "1/1" }}>
-        <ImageCarousel
-          tabsNum={post.multimedias.length}
-          additionalComponents={[]}
-        >
-          {post.multimedias.map((url, id) => (
-            <img
-              style={{ height: "100%" }}
-              src={`${server.getUri()}/${url}`}
-              alt="Slika"
-              key={id}
-            ></img>
-          ))}
-        </ImageCarousel>
-      </Box>
+      <PostImageCarousel post={post}  />
+      
       <PostButtonList post={post} withoutPadding />
-      <PostNumberOfLikes post={post} />
+      <PostNumberOfLikes post={post} withoutPadding/>
       <Typography>
         <span style={{ fontWeight: 600 }}>{post.creator.username} </span>
         <span>{post.description}</span>

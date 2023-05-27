@@ -1,6 +1,8 @@
 import {
   CHANGE_PROFILE_IMAGE,
   FOLLOW_USER,
+  GET_PROFILE_MARKED_POSTS,
+  GET_PROFILE_MARKED_POSTS_LOADING,
   GET_PROFILE_POSTS,
   GET_PROFILE_POSTS_LOADING,
   GET_USER_PROFILE,
@@ -23,6 +25,10 @@ const profileReducer = (state = {}, action) => {
       return { ...state, profilePosts: action.payload };
     case GET_PROFILE_POSTS_LOADING:
       return { ...state, profilePosts: { isLoading: true } };
+    case GET_PROFILE_MARKED_POSTS:
+      return { ...state, profileMarkedPosts: action.payload };
+    case GET_PROFILE_MARKED_POSTS_LOADING:
+      return { ...state, profileMarkedPosts: { isLoading: true } };
     case FOLLOW_USER:
       let followers = [...state.follows, action.payload];
       return { ...state, followers };

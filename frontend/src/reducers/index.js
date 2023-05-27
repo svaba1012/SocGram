@@ -7,6 +7,7 @@ import profileReducer from "./profile-reducer";
 
 import userReducer from "./user-reducer";
 import userSuggestionsReducer from "./userSuggestions-reducer";
+import taggedUsersReducer from "./tagged-users-reducer";
 
 const reducers = {
   user: userReducer,
@@ -16,6 +17,7 @@ const reducers = {
   newComment: newCommentReducer,
   mainPage: mainPageReducer,
   userSuggestions: userSuggestionsReducer,
+  taggedUsers: taggedUsersReducer,
 };
 
 export default combineReducers(reducers);

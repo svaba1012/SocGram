@@ -43,6 +43,7 @@ const newPostReducer = (
       files1[imageIndex].scroll = scroll;
 
       return { ...state, files: files1 };
+
     case PROCESS_CROPPING_OF_IMAGES:
       return { ...state, ...action.payload };
     case SET_NEW_POST_MODAL_WINDOW_WIDTH:

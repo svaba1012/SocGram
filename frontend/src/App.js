@@ -16,14 +16,16 @@ import ProfileSavedPosts from "./components/profile/ProfileSavedPosts";
 import LikedByModal from "./components/modals/LikedByModal";
 import FollowsModal from "./components/modals/FollowsModal";
 import FollowersModal from "./components/modals/FollowersModal";
-import { signInWithToken } from "./actions/user-actions";
+import { signInWithToken, getCurrentUserInfo } from "./actions/user-actions";
 import PostPage from "./components/pages/PostPage";
+import ProfileTaggedPosts from "./components/profile/ProfileTaggedPosts";
 
 function App(props) {
   const matches = useMediaQuery("(min-width:600px)");
 
   useEffect(() => {
     props.signInWithToken();
+    props.getCurrentUserInfo();
   }, []);
 
   if (!props.user || !props.user.isLoaded) {
@@ -62,7 +64,7 @@ function App(props) {
               <Route path="followers" element={<FollowersModal />}></Route>
             </Route>
             <Route path="saved" element={<ProfileSavedPosts />}></Route>
-            <Route path="tagged" element={<ProfilePosts isTagged />}></Route>
+            <Route path="tagged" element={<ProfileTaggedPosts />}></Route>
           </Route>
           <Route
             path="/posts/:pid"
@@ -90,4 +92,4 @@ const mapState = (state) => {
   return { user: state.user, isFromProfile: state.post.isEnteredFromProfile };
 };
 
-export default connect(mapState, { signInWithToken })(App);
+export default connect(mapState, { signInWithToken, getCurrentUserInfo })(App);

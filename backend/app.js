@@ -52,7 +52,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(process.env.LOCAL_DB_CONNECTION)
+  .connect(process.env.DB_CONNECTION)
   .then(() =>
     app.listen(5000, "localhost", () => {
       console.log("Server started on port 5000");

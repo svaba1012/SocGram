@@ -26,6 +26,10 @@ const getPostById = async (req, res, next) => {
     ]);
     await Post.populate(post, { path: "creator" });
     await Post.populate(post, { path: "likes", limit: 3 });
+    await Post.populate(post, {
+      path: "markedUsers.userId",
+      select: "username _id",
+    });
   } catch (err) {
     console.log(err);
     return next(new HttpError("Can't connect to the database", 500));
@@ -41,9 +45,9 @@ const getPostById = async (req, res, next) => {
 };
 
 const insertPost = async (req, res, next) => {
-  const { creator, description } = req.body;
+  const { creator, description, tagged } = req.body;
   let user;
-
+  console.log(JSON.parse(tagged));
   try {
     user = await User.findById(creator);
   } catch (err) {
@@ -64,7 +68,7 @@ const insertPost = async (req, res, next) => {
     time: new Date().getTime(),
     creator,
     description,
-    markedUsers: [],
+    markedUsers: JSON.parse(tagged),
     multimedias: imagesPaths,
     likes: [],
   });
@@ -246,6 +250,10 @@ const getPostsOfUserFollowers = async (req, res, next, userId) => {
 
     await Post.populate(posts, { path: "creator" });
     await Post.populate(posts, { path: "likes", perDocumentLimit: 3 });
+    await Post.populate(posts, {
+      path: "markedUsers.userId",
+      select: "username _id",
+    });
   } catch (err) {
     return next(new HttpError("DB error", 500));
   }
@@ -257,15 +265,52 @@ const getPostsOfUserFollowers = async (req, res, next, userId) => {
   res.json({ posts });
 };
 
+const getPostsWhereMarked = async (req, res, next, muid) => {
+  let posts;
+  try {
+    posts = await Post.aggregate([
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "postId",
+          as: "comments",
+        },
+      },
+      { $addFields: { numOfComments: { $size: "$comments" } } },
+      { $unset: ["comments"] },
+      {
+        $match: {
+          markedUsers: {
+            $elemMatch: { userId: new mongoose.Types.ObjectId(muid) },
+          },
+        },
+      },
+    ]);
+  } catch (err) {
+    console.log(err);
+    return next(new HttpError("DB error", 500));
+  }
+
+  if (!posts) {
+    posts = [];
+  }
+
+  res.json({ posts: posts });
+};
+
 const getPosts = async (req, res, next) => {
   let query = req.query;
   let creator = query.creator;
   let uid = query.uid;
+  let muid = query.muid;
 
   if (creator) {
     await getProfilePosts(req, res, next, creator);
   } else if (uid) {
     await getPostsOfUserFollowers(req, res, next, uid);
+  } else if (muid) {
+    await getPostsWhereMarked(req, res, next, muid);
   }
 };
 

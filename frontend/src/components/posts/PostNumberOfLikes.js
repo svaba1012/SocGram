@@ -11,13 +11,15 @@ import {
 
 import server from "../../config/server";
 
-function PostNumberOfLikes({ post }) {
+function PostNumberOfLikes({ post, withoutPadding }) {
   if (!post.likes) {
     return <div></div>;
   }
+
+  
   return (
     <Box>
-      <ListItem sx={{ paddingLeft: "0px", paddingTop: "0px" }}>
+      <ListItem sx={{ paddingTop: "0px", paddingLeft: withoutPadding?"0px": "" }}>
         {/* <ListItemAvatar> */}
         <AvatarGroup>
           {post.likes.map((user, id) => (

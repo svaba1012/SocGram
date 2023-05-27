@@ -13,7 +13,7 @@ import server from "../../config/server";
 
 function UserSuggestionListItem({ suggestion }) {
   return (
-    <ListItem>
+    <ListItem sx={{padding: "0px"}}>
       <Link
         to={`/profile/${suggestion.user.username}`}
         style={{
@@ -25,7 +25,7 @@ function UserSuggestionListItem({ suggestion }) {
           <Avatar
             sx={{ width: "35px", height: "35px" }}
             src={`${server.getUri()}/${suggestion.user.profileImage}`}
-            alt={suggestion.user.username}
+            alt={suggestion.user.username.toUpperCase()}
           ></Avatar>
         </ListItemAvatar>
       </Link>
@@ -45,13 +45,14 @@ function UserSuggestionListItem({ suggestion }) {
         }
         secondary={
           <span style={{ fontSize: "0.8em" }}>
-            {`Followed by ${suggestion.oneFollower.username} + ${
-              suggestion.num - 1
-            } more`}
+            {`Followed by ${suggestion.oneFollower.username} ${
+              suggestion.num - 1 > 0 ? `+ ${suggestion.num - 1} more` : ""
+            }`}
           </span>
         }
+        sx={{marginRight: "40px"}}
       />
-      <ListItemButton color="primary" sx={{ color: "blue" }}>
+      <ListItemButton color="primary" sx={{ color: "blue", marginLeft: "auto", padding: "0px" }}>
         Follow
       </ListItemButton>
     </ListItem>

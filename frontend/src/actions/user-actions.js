@@ -2,6 +2,7 @@ import server from "../config/server";
 import {
   CHANGE_PROFILE_IMAGE,
   FOLLOW_USER,
+  GET_CURRENT_USER_INFO,
   GET_FOLLOWERS,
   GET_FOLLOWING,
   GET_SUGGESTIONS_FOR_USER,
@@ -93,6 +94,12 @@ export const signInWithToken = () => async (dispatch) => {
 
   dispatch({ type: SIGN_IN, payload: { ...userData, isLoaded: true } });
 };
+
+export const getCurrentUserInfo = () => async (dispatch, getState) => {
+  let user = getState().user;
+  let res = await server.get(`${USER_BASE_ROUTE}/${user.username}`, {params: {uid: user.userId}});
+  dispatch({type: GET_CURRENT_USER_INFO, payload: res.data.user});
+}
 
 export const getUserProfile = (username) => async (dispatch) => {
   dispatch({
@@ -194,3 +201,12 @@ export const getSuggestionsForUser = (uid) => async (dispatch) => {
 
   dispatch({ type: GET_SUGGESTIONS_FOR_USER, payload: res.data.suggestions });
 };
+
+
+export const searchUsers = async (searchText) => {
+  console.log(searchText)
+  let res = await server.get(`${USER_BASE_ROUTE}`, {
+    params: { search: searchText },
+  });
+  return res.data.users;
+} 
