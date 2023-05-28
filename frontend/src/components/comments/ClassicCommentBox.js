@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   Avatar,
@@ -12,7 +13,6 @@ import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded
 import server from "../../config/server";
 import { formatDateDistanceFromNow } from "../../utils/dateFunctions";
 import { setNewCommentAsAnswerComment } from "../../actions/new-comment-actions";
-import { connect } from "react-redux";
 
 function ClassicCommentBox({
   comment,

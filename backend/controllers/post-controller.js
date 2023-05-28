@@ -47,7 +47,6 @@ const getPostById = async (req, res, next) => {
 const insertPost = async (req, res, next) => {
   const { creator, description, tagged } = req.body;
   let user;
-  console.log(JSON.parse(tagged));
   try {
     user = await User.findById(creator);
   } catch (err) {

@@ -77,21 +77,22 @@ const signUp = async (req, res, next) => {
 
 const getUserProfile = async (req, res, next) => {
   let { username } = req.params;
-  let {uid} = req.query;
+  let { uid } = req.query;
   let userProfile;
-  if(uid){
-    
+  if (uid) {
     try {
-      userProfile = await User.findById(uid).select({username: 1, firstName: 1, lastName: 1, profileImage: 1}).exec();
+      userProfile = await User.findById(uid)
+        .select({ username: 1, firstName: 1, lastName: 1, profileImage: 1 })
+        .exec();
     } catch (error) {
       console.log(error);
       return next(new HttpError("Can't connect to the database", 500));
     }
-  
+
     if (!userProfile) {
       return next(new HttpError("User don't exist"));
     }
-  res.json({ user: userProfile});
+    res.json({ user: userProfile });
     return;
   }
 
@@ -124,7 +125,6 @@ const getUserProfile = async (req, res, next) => {
 
   let count =
     postCount && postCount[0] && postCount[0].count ? postCount[0].count : 0;
-  // console.log(postCount);
   userProfile.password = null;
 
   res.json({ user: userProfile, postCount: count });
@@ -220,28 +220,27 @@ const getUserProfilesByIds = async (req, res, next) => {
 const searchUsers = async (req, res, next) => {
   let searchText = req.query.search;
   let users;
-  try{
+  try {
     users = await User.find({});
     console.log("Implement user search");
-  }catch(err){
+  } catch (err) {
     return next(new HttpError("DB error", 500));
   }
 
-  if(!users){
+  if (!users) {
     users = [];
   }
 
-  res.json({users});
-}
+  res.json({ users });
+};
 
 const getUsers = async (req, res, next) => {
-  console.log(req.query);
   if (req.query.users) {
     await getUserProfilesByIds(req, res, next);
   } else if (req.query.suggestFor) {
     await getSuggestionsForUser(req, res, next);
-  }else if(req.query.search){
-    await searchUsers(req, res, next)
+  } else if (req.query.search) {
+    await searchUsers(req, res, next);
   }
 };
 

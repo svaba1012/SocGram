@@ -13,7 +13,7 @@ import server from "../../config/server";
 
 function UserSuggestionListItem({ suggestion }) {
   return (
-    <ListItem sx={{padding: "0px"}}>
+    <ListItem sx={{ padding: "0px" }}>
       <Link
         to={`/profile/${suggestion.user.username}`}
         style={{
@@ -50,9 +50,12 @@ function UserSuggestionListItem({ suggestion }) {
             }`}
           </span>
         }
-        sx={{marginRight: "40px"}}
+        sx={{ marginRight: "40px" }}
       />
-      <ListItemButton color="primary" sx={{ color: "blue", marginLeft: "auto", padding: "0px" }}>
+      <ListItemButton
+        color="primary"
+        sx={{ color: "blue", marginLeft: "auto", padding: "0px" }}
+      >
         Follow
       </ListItemButton>
     </ListItem>

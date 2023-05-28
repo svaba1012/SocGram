@@ -1,31 +1,11 @@
 const { default: mongoose } = require("mongoose");
+
 const Comment = require("../models/comment-model");
 
-const insertComment = async (req, res, next) => {
-  let { creator, text, commentId, answerUser } = req.body;
-  let postId = req.pid;
+const saveAnswer = async (req, res, next) => {
   let comment;
+  let { creator, text, commentId, answerUser } = req.body;
 
-  if (!commentId) {
-    // classical comment
-    comment = new Comment({
-      text: text,
-      time: new Date().getTime(),
-      creator: creator,
-      postId: postId,
-      answersIds: [],
-      answerUser,
-      likes: [],
-    });
-    try {
-      await comment.save();
-    } catch (err) {
-      return next(new HttpError("DB error, 500"));
-    }
-
-    res.json({ comment });
-    return;
-  }
   comment = new Comment({
     text: text,
     time: new Date().getTime(),
@@ -34,7 +14,6 @@ const insertComment = async (req, res, next) => {
     answerUser,
     likes: [],
   });
-  // answering comment
   try {
     let commentAnswer = await Comment.findById(commentId);
     let session = await mongoose.startSession();
@@ -48,13 +27,47 @@ const insertComment = async (req, res, next) => {
   }
 
   res.json({ comment });
+  return;
+};
+
+const saveComment = async (req, res, next) => {
+  let comment;
+  let { creator, text, answerUser } = req.body;
+  let postId = req.pid;
+  comment = new Comment({
+    text: text,
+    time: new Date().getTime(),
+    creator: creator,
+    postId: postId,
+    answersIds: [],
+    answerUser,
+    likes: [],
+  });
+  try {
+    await comment.save();
+  } catch (err) {
+    return next(new HttpError("DB error, 500"));
+  }
+
+  res.json({ comment });
+};
+
+const insertComment = async (req, res, next) => {
+  let { commentId } = req.body;
+  if (!commentId) {
+    // classical comment
+    await saveComment(req, res, next);
+    return;
+  }
+  // answering comment
+  await saveAnswer(req, res, next);
+  return;
 };
 
 const deleteComment = (req, res, next) => {};
 const likeComment = (req, res, next) => {};
+
 const getCommentsByPostId = async (req, res, next) => {
-  // let postId = new mongoose.Types.ObjectId(req.pid);
-  // console.log(req.params);
   let page = Number(req.query.page);
   const COMMENT_LIMIT = 5;
   let comments;
@@ -107,7 +120,6 @@ const getAnswersOfComment = async (req, res, next) => {
   if (!answers) {
     return next(new HttpError("Not found", 404));
   }
-
   res.json({ answers });
 };
 

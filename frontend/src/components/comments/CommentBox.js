@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   List,
   ListItem,
@@ -8,17 +9,10 @@ import {
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-import { setNewCommentAsAnswerComment } from "../../actions/new-comment-actions";
 import { getAnswersOfComment } from "../../actions/comment-actions";
-import { connect } from "react-redux";
 import ClassicCommentBox from "./ClassicCommentBox";
 
-function CommentBox({
-  comment,
-  isDescription,
-  setNewCommentAsAnswerComment,
-  getAnswersOfComment,
-}) {
+function CommentBox({ comment, isDescription, getAnswersOfComment }) {
   return (
     <>
       <ClassicCommentBox comment={comment} isDescription={isDescription} />
@@ -49,10 +43,11 @@ function CommentBox({
           {comment.answersShowed &&
           !!comment.answers &&
           comment.answers.length > 0
-            ? comment.answers.map((answer) => (
+            ? comment.answers.map((answer, id) => (
                 <ClassicCommentBox
                   comment={answer}
                   parentCommentId={comment._id}
+                  key={id}
                 />
               ))
             : ""}
@@ -94,6 +89,5 @@ function CommentBox({
 }
 
 export default connect(null, {
-  setNewCommentAsAnswerComment,
   getAnswersOfComment,
 })(CommentBox);

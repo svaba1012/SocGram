@@ -23,12 +23,8 @@ function MarkUserPopover({
   setIsVisible,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mouseX, setMouseX] = React.useState();
-  const [mouseY, setMouseY] = React.useState();
-
-  // !!!!!!!!
-  // const [taggedUsers, setTaggedUsers] = React.useState([]);
-  // !!!!!!!!
+  const [mouseX, setMouseX] = React.useState(0);
+  const [mouseY, setMouseY] = React.useState(0);
 
   const pictureAreaRef = React.useRef();
   const handleClick = (event) => {

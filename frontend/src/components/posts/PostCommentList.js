@@ -36,8 +36,8 @@ function PostCommentList({ post, style, getCommentsByPostId }) {
           }}
           isDescription
         ></CommentBox>
-        {post.comments.map((comment) => (
-          <CommentBox comment={comment} />
+        {post.comments.map((comment, id) => (
+          <CommentBox comment={comment} key={id} />
         ))}
         <Box
           sx={{

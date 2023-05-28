@@ -3,7 +3,6 @@ import { Box, Container, Typography } from "@mui/material";
 import PostList from "../posts/PostList";
 import UserSuggestions from "../user/UserSuggestions";
 import { Link } from "react-router-dom";
-import UserListItem from "../user/UserListItem";
 import CurrentUserListItem from "../user/CurrentUserListItem";
 
 function UserMainPage({ userId }) {
@@ -13,7 +12,7 @@ function UserMainPage({ userId }) {
         <PostList userId={userId} />
       </Box>
       <Box sx={{}}>
-        <CurrentUserListItem/>
+        <CurrentUserListItem />
         <Box sx={{ display: "flex" }}>
           <Typography sx={{ color: "grey" }}>Suggestions</Typography>
           <Typography

@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String },
   lastName: { type: String },
   email: { type: String, required: true },
-  // posts: [{ type: mongoose.Types.ObjectId, required: true, ref: "Post" }],
   follows: [
     {
       type: mongoose.Types.ObjectId,

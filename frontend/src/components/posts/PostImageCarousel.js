@@ -23,7 +23,6 @@ function PostImageCarousel({ post }) {
           // Implemet liking
         } else {
           setIsTagVisible(!isTaggedVisible);
-          console.log("taggedUsers");
         }
       }}
     >
@@ -44,9 +43,9 @@ function PostImageCarousel({ post }) {
         additionalComponents={[]}
       >
         {post.multimedias.map((url, id) => (
-          <div style={{ height: "100%", position: "relative" }}>
+          <div style={{ height: "100%", position: "relative" }} key={id}>
             {isTaggedVisible &&
-              post.markedUsers.map((tag) => {
+              post.markedUsers.map((tag, i) => {
                 if (tag.imageId !== id) {
                   return;
                 }
@@ -61,6 +60,7 @@ function PostImageCarousel({ post }) {
                       left: `${tag.position.x * 100}%`,
                     }}
                     linkTo={`/profile/${tag.userId.username}`}
+                    key={i}
                   />
                 );
               })}

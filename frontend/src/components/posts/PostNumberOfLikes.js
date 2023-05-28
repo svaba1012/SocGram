@@ -16,11 +16,11 @@ function PostNumberOfLikes({ post, withoutPadding }) {
     return <div></div>;
   }
 
-  
   return (
     <Box>
-      <ListItem sx={{ paddingTop: "0px", paddingLeft: withoutPadding?"0px": "" }}>
-        {/* <ListItemAvatar> */}
+      <ListItem
+        sx={{ paddingTop: "0px", paddingLeft: withoutPadding ? "0px" : "" }}
+      >
         <AvatarGroup>
           {post.likes.map((user, id) => (
             <Avatar

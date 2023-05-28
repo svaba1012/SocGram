@@ -32,7 +32,6 @@ export const addComment = (postId) => async (dispatch, getState) => {
   let { text, answerOnCommentId, answerOnCommentUsername } = state.newComment;
   // id of comment that is answered to
 
-  console.log("Ima nade");
   let res = await server.post(`${POST_BASE_ROUTE}/${postId}/comments`, {
     creator,
     text,

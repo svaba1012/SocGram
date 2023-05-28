@@ -14,8 +14,8 @@ function PostList({ userId, posts, getPostsOfFollows }) {
   }
   return (
     <Container>
-      {posts.map((post) => (
-        <PostMainPage post={post} />
+      {posts.map((post, id) => (
+        <PostMainPage post={post} key={id} />
       ))}
     </Container>
   );

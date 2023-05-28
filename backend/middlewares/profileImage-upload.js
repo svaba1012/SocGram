@@ -15,7 +15,6 @@ const profileImageUpload = multer({
     filename: (req, file, cb) => {
       const ext = MIME_TYPE_MAP[file.mimetype];
       const time = new Date().getTime();
-      console.log("Filename");
       let uniqueSuffix = time + "-" + Math.round(Math.random() * 1e9);
       cb(null, `image-${uniqueSuffix}.${ext}`);
     },

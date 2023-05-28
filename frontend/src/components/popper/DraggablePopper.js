@@ -1,7 +1,6 @@
 import React from "react";
-import { Paper, Button, Typography, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import Draggable from "react-draggable";
-import CloseIcon from "@mui/icons-material/Close";
 import CustomTooltip from "../reusables/CustomTooltip";
 
 function DraggablePopper({
@@ -39,43 +38,6 @@ function DraggablePopper({
           onCloseClicked={onCloseClicked}
         />{" "}
       </Box>
-
-      {/* 
-        <Box
-          sx={{
-            position: "relative",
-
-            mt: "10px",
-            "&::before": {
-              backgroundColor: "#262626",
-
-              content: '""',
-              display: "block",
-              position: "absolute",
-              width: 12,
-              height: 12,
-              top: -6,
-              transform: "rotate(45deg)",
-              left: "calc(30px)",
-            },
-          }}
-        />
-        <Box
-          sx={{
-            backgroundColor: "#262626",
-            borderRadius: "5px",
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            zIndex: 201,
-          }}
-        >
-          <Typography sx={{ p: 0.5, marginRight: "5px" }}>
-            {user.username}
-          </Typography>
-          <CloseIcon sx={{ cursor: "pointer" }} onClick={onCloseClicked} />
-        </Box>
-      </Box> */}
     </Draggable>
   );
 }

@@ -1,7 +1,7 @@
 import React from "react";
+import EmojiPicker from "emoji-picker-react";
 import { Popover } from "@mui/material";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
-import EmojiPicker from "emoji-picker-react";
 
 function EmojiPickerPopper(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);

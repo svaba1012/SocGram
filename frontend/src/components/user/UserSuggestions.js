@@ -1,6 +1,6 @@
-import { List } from "@mui/material";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { List } from "@mui/material";
 
 import { getSuggestionsForUser } from "../../actions/user-actions";
 import UserSuggestionListItem from "./UserSuggestionListItem";
@@ -14,8 +14,8 @@ function UserSuggestions({ userId, getSuggestionsForUser, suggestions }) {
   }
   return (
     <List>
-      {suggestions.suggestions.map((suggestion) => (
-        <UserSuggestionListItem suggestion={suggestion} />
+      {suggestions.suggestions.map((suggestion, id) => (
+        <UserSuggestionListItem suggestion={suggestion} key={id} />
       ))}
     </List>
   );

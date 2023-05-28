@@ -1,8 +1,7 @@
 import React from "react";
-import { Paper, Button, Typography, Box } from "@mui/material";
-import Draggable from "react-draggable";
-import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
+import { Typography, Box } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 function CustomTooltip({ style, label, onCloseClicked, linkTo }) {
   return (

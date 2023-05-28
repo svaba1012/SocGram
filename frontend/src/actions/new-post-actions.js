@@ -132,11 +132,9 @@ export const postNewPost = (uid) => async (dispatch, getState) => {
     )
   );
 
-  console.log(cropedImages);
   let newPostFormData = new FormData();
   cropedImages.forEach((image) => {
     newPostFormData.append("images", image);
-    console.log(image);
   });
 
   newPostFormData.append("description", description);
