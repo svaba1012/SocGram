@@ -12,23 +12,6 @@ function UserMainPage({ userId }) {
         <PostList userId={userId} />
       </Box>
       <Box sx={{}}>
-        <CurrentUserListItem />
-        <Box sx={{ display: "flex" }}>
-          <Typography sx={{ color: "grey" }}>Suggestions</Typography>
-          <Typography
-            sx={{
-              cursor: "pointer",
-              marginLeft: "auto",
-              fontWeight: 600,
-              color: "inherit",
-              textDecoration: "none",
-            }}
-            component={Link}
-            to="explore/users"
-          >
-            Show more
-          </Typography>
-        </Box>
         <UserSuggestions userId={userId} />
       </Box>
     </Container>

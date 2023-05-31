@@ -10,14 +10,24 @@ import PostNumberOfLikes from "./PostNumberOfLikes";
 import PostAddComment from "./PostAddComment";
 import PostImageCarousel from "./PostImageCarousel";
 
-function PostMainPage({ post }) {
+function PostMainPage({ post, removeLike, isLikedByMe, likePost }) {
   return (
     <Box sx={{ width: "80vh", marginBottom: "20px" }}>
       <PostCreatorBox post={post} withoutPadding />
-      <PostImageCarousel post={post}  />
-      
-      <PostButtonList post={post} withoutPadding />
-      <PostNumberOfLikes post={post} withoutPadding/>
+      <PostImageCarousel
+        post={post}
+        isLikedByMe={isLikedByMe}
+        likePost={likePost}
+      />
+
+      <PostButtonList
+        post={post}
+        withoutPadding
+        isLikedByMe={isLikedByMe}
+        likePost={likePost}
+        removeLike={removeLike}
+      />
+      <PostNumberOfLikes post={post} withoutPadding />
       <Typography>
         <span style={{ fontWeight: 600 }}>{post.creator.username} </span>
         <span>{post.description}</span>

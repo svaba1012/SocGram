@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { connect } from "react-redux";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import BottomMenu from "./components/navigation/BottomMenu";
 import SideMenu from "./components/navigation/SideMenu";
@@ -28,7 +28,7 @@ function App(props) {
     props.getCurrentUserInfo();
   }, []);
 
-  if (!props.user || !props.user.isLoaded) {
+  if (!props.user) {
     return;
   }
 

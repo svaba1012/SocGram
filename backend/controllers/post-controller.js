@@ -20,6 +20,8 @@ const getPostById = async (req, res, next) => {
           as: "comments",
         },
       },
+
+      { $addFields: { likesIds: "$likes" } },
       { $addFields: { numOfComments: { $size: "$comments" } } },
       { $addFields: { numOfLikes: { $size: "$likes" } } },
       { $unset: ["comments"] },
@@ -237,11 +239,11 @@ const getPostsOfUserFollowers = async (req, res, next, userId) => {
           as: "comments",
         },
       },
+      { $addFields: { likesIds: "$likes" } },
       { $addFields: { numOfComments: { $size: "$comments" } } },
       { $addFields: { numOfLikes: { $size: "$likes" } } },
       { $unset: ["comments"] },
       { $match: { creator: { $in: user.follows } } },
-
       { $sort: { time: -1 } },
       { $limit: POST_LIMIT },
       // { $skip: page * POST_LIMIT },

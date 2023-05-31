@@ -6,9 +6,9 @@ import {
 const userSuggestionsReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_SUGGESTIONS_FOR_USER_LOADING:
-      return { ...state };
+      return { ...state, isLoading: true };
     case GET_SUGGESTIONS_FOR_USER:
-      return { ...state, suggestions: action.payload };
+      return { ...state, suggestions: action.payload, isLoading: false };
     default:
       return { ...state };
   }

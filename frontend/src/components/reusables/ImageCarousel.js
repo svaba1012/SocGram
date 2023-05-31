@@ -11,11 +11,13 @@ function ImageCarousel(props) {
 
   const theme = useTheme();
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    e.stopPropagation();
     setActiveImage(activeImage + 1);
   };
 
-  const handleBack = () => {
+  const handleBack = (e) => {
+    e.stopPropagation();
     setActiveImage(activeImage - 1);
   };
   return (

@@ -12,6 +12,8 @@ import {
   HIDE_ANSWERS,
   LIKE_POST,
   REMOVE_POST_LIKE,
+  SET_IS_LIKE,
+  SET_LIKE_IS_SENDING,
   SET_POST_ENTERED_FROM_PROFILE,
   SHOW_ANSWERS,
 } from "../actions/types";
@@ -108,13 +110,19 @@ const postReducer = (state = {}, action) => {
       return { ...state, likedBy: action.payload };
 
     case LIKE_POST:
-      likes = [...state.likes];
-      return { ...state, likes: [...likes, action.payload] };
+      if (!state.likesIds) {
+        return { ...state };
+      }
+      likes = [...state.likesIds];
+      return { ...state, likesIds: [...likes, action.payload.uid] };
     case REMOVE_POST_LIKE:
-      likes = [...state.likes];
+      if (!state.likesIds) {
+        return { ...state };
+      }
+      likes = [...state.likesIds];
       return {
         ...state,
-        likes: likes.filter((like) => like !== action.payload),
+        likesIds: likes.filter((like) => like !== action.payload.uid),
       };
     case SET_POST_ENTERED_FROM_PROFILE:
       return { ...state, isEnteredFromProfile: action.payload };

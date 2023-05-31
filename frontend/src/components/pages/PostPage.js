@@ -11,10 +11,21 @@ import PostNumberOfLikes from "../posts/PostNumberOfLikes";
 import PostAddComment from "../posts/PostAddComment";
 import server from "../../config/server";
 
-import { getPostById } from "../../actions/post-actions";
+import {
+  getPostById,
+  likePost,
+  removePostLike,
+} from "../../actions/post-actions";
 import PostImageCarousel from "../posts/PostImageCarousel";
 
-function PostPage({ post, getPostById, outsideModal }) {
+function PostPage({
+  post,
+  getPostById,
+  outsideModal,
+  likePost,
+  removePostLike,
+  user,
+}) {
   let { pid } = useParams();
   let navigate = useNavigate();
   useEffect(() => {
@@ -67,13 +78,24 @@ function PostPage({ post, getPostById, outsideModal }) {
           userIds: post.likes,
         }}
       />
-      <PostImageCarousel post={post} />
-     
+      <PostImageCarousel
+        post={post}
+        likePost={() => likePost(post._id, user.userId)}
+        isLikedByMe={post.likesIds.includes(user.userId)}
+      />
+
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <PostCreatorBox post={post} />
         <PostCommentList post={post} style={{ flexGrow: 1 }} />
 
-        <PostButtonList post={post} />
+        <PostButtonList
+          post={post}
+          likePost={() => likePost(post._id, user.userId)}
+          removeLike={() => {
+            removePostLike(post._id, user.userId);
+          }}
+          isLikedByMe={post.likesIds.includes(user.userId)}
+        />
         <PostNumberOfLikes post={post} />
         <Divider />
         <PostAddComment post={post} />
@@ -83,7 +105,9 @@ function PostPage({ post, getPostById, outsideModal }) {
 }
 
 const mapState = (state) => {
-  return { post: state.post };
+  return { post: state.post, user: state.user };
 };
 
-export default connect(mapState, { getPostById })(PostPage);
+export default connect(mapState, { getPostById, removePostLike, likePost })(
+  PostPage
+);

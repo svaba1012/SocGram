@@ -12,26 +12,26 @@ import { likePost, removePostLike } from "../../actions/post-actions";
 function PostButtonList({
   post,
   likePost,
-  removePostLike,
-  user,
+  removeLike,
+  isLikedByMe,
   withoutPadding,
 }) {
-  if (!post.likes) {
+  if (!post.likesIds) {
     return <div></div>;
   }
 
   return (
     <Box sx={{ display: "flex", padding: withoutPadding ? "0px" : "8px" }}>
-      {post.likes.lenght === 0 || post.likes.includes(user.userId) ? (
+      {post.likesIds.lenght === 0 || isLikedByMe ? (
         <IconButton
-          onClick={() => removePostLike(post._id, user.userId)}
+          onClick={() => removeLike()}
           sx={{ paddingLeft: withoutPadding ? "0px" : "8px" }}
         >
           <FavoriteRoundedIcon sx={{ color: "red", fontSize: "1.3em" }} />
         </IconButton>
       ) : (
         <IconButton
-          onClick={() => likePost(post._id, user.userId)}
+          onClick={() => likePost()}
           sx={{ paddingLeft: withoutPadding ? "0px" : "8px" }}
         >
           <FavoriteBorderRoundedIcon sx={{ fontSize: "1.3em" }} />
@@ -51,8 +51,4 @@ function PostButtonList({
   );
 }
 
-const mapState = (state) => {
-  return { user: state.user };
-};
-
-export default connect(mapState, { likePost, removePostLike })(PostButtonList);
+export default PostButtonList;

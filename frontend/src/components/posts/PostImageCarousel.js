@@ -1,14 +1,15 @@
 import React, { useRef, useState } from "react";
+import { connect } from "react-redux";
 import { Box } from "@mui/material";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 
 import ImageCarousel from "../reusables/ImageCarousel";
-import server from "../../config/server";
-
 import "./PostImageCarousel.css";
 import CustomTooltip from "../reusables/CustomTooltip";
+import server from "../../config/server";
+import { likePost } from "../../actions/post-actions";
 
-function PostImageCarousel({ post }) {
+function PostImageCarousel({ post, likePost, isLikedByMe }) {
   let [isTaggedVisible, setIsTagVisible] = useState(false);
   let [likeIconStyleClasses, setLikeIconStyleClasses] = useState("like-icon ");
   return (
@@ -20,7 +21,9 @@ function PostImageCarousel({ post }) {
           setTimeout(() => {
             setLikeIconStyleClasses("like-icon ");
           }, 1005);
-          // Implemet liking
+          if (!isLikedByMe) {
+            likePost();
+          }
         } else {
           setIsTagVisible(!isTaggedVisible);
         }
