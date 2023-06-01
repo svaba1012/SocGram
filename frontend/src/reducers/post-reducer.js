@@ -97,7 +97,14 @@ const postReducer = (state = {}, action) => {
       if (!comments1[commentIndex1].answers) {
         comments1[commentIndex1].answers = [];
       }
-      comments1[commentIndex1].answers.push(action.payload.comment);
+      comments1[commentIndex1].answers = [
+        ...comments1[commentIndex1].answers,
+        action.payload.comment,
+      ];
+      comments1[commentIndex1].answersIds = [
+        ...comments1[commentIndex1].answersIds,
+        action.payload.comment._id,
+      ];
       comments1[commentIndex1].answersShowed = true;
       return { ...state, comments: comments1 };
 
@@ -127,7 +134,13 @@ const postReducer = (state = {}, action) => {
     case SET_POST_ENTERED_FROM_PROFILE:
       return { ...state, isEnteredFromProfile: action.payload };
     case ADD_COMMENT:
-      return { ...state, comments: [...state.comments, action.payload] };
+      if (!state.comments) {
+        state.comments = [];
+      }
+      return {
+        ...state,
+        comments: [...state.comments, action.payload.comment],
+      };
     default:
       return { ...state };
   }

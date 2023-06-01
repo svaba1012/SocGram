@@ -1,5 +1,6 @@
 # SocGram
-> SocGram, social media app, built using MERN stack, REST API as backend. SocGram or InstaSoc is copy of Instagram 
+
+> SocGram, social media app, built using MERN stack, REST API as backend. SocGram or InstaSoc is copy of Instagram
 
 ### Here are some pictures of app
 
@@ -10,8 +11,10 @@
 ![Picture](./readmePics/tag.png)
 ![Picture](./readmePics/comments.png)
 
-### *!!!* There are currently lot of errors and unfinished things.
-#### Some of them: 
+### _!!!_ There are currently lot of errors and unfinished things.
+
+#### Some of them:
+
 1. Follow button is suggestions list is unfunctional.
 2. Suggestion page is not created yet(Show more link on suggestions list isn't functional)
 3. Menus (Navigation) has some items that point to pages that aren't implemeted yet.
@@ -21,4 +24,5 @@
 7. Closing of creating post modal when posting new post.
 8. Option modal menu on profile page is unfunctional.
 9. Comments liking isn't implemented.
-10. ...
+10. Adding comments to the list of comments **(fixed)**
+11. ...

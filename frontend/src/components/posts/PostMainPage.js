@@ -10,7 +10,7 @@ import PostNumberOfLikes from "./PostNumberOfLikes";
 import PostAddComment from "./PostAddComment";
 import PostImageCarousel from "./PostImageCarousel";
 
-function PostMainPage({ post, removeLike, isLikedByMe, likePost }) {
+function PostMainPage({ post, removeLike, isLikedByMe, likePost, id }) {
   return (
     <Box sx={{ width: "80vh", marginBottom: "20px" }}>
       <PostCreatorBox post={post} withoutPadding />
@@ -32,6 +32,13 @@ function PostMainPage({ post, removeLike, isLikedByMe, likePost }) {
         <span style={{ fontWeight: 600 }}>{post.creator.username} </span>
         <span>{post.description}</span>
       </Typography>
+      {post.comments &&
+        post.comments.map((comment, i) => (
+          <Typography key={i}>
+            <span style={{ fontWeight: 600 }}>{comment.creator.username} </span>
+            <span>{comment.text}</span>
+          </Typography>
+        ))}
       {post.numOfComments > 0 ? (
         <Typography
           sx={{ color: "grey", textDecoration: "none" }}
@@ -43,7 +50,7 @@ function PostMainPage({ post, removeLike, isLikedByMe, likePost }) {
       ) : (
         ""
       )}
-      <PostAddComment post={post} withoutPadding />
+      <PostAddComment post={post} withoutPadding id={id} />
       <Divider />
     </Box>
   );

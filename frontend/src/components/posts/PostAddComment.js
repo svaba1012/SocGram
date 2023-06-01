@@ -30,8 +30,14 @@ function PostAddComment({
 }) {
   let [commentText, setCommentText] = useState("");
   let padding = withoutPadding ? { padding: "0px" } : {};
+  const sendComment = (e) => {
+    e.preventDefault();
+    setComment(commentText);
+    addComment(post._id, id);
+    setCommentText("");
+  };
   return (
-    <>
+    <form>
       <ListItem sx={{ width: "100%", ...padding }}>
         <EmojiPickerPopper
           handleOnClick={(emoji) => {
@@ -39,7 +45,6 @@ function PostAddComment({
           }}
         />
         <TextField
-          id={id}
           variant="standard"
           size="small"
           placeholder="Add comment"
@@ -71,18 +76,15 @@ function PostAddComment({
 
         <ListItemIcon>
           <IconButton
-            onClick={() => {
-              setComment(commentText);
-              addComment(post._id);
-              setCommentText("");
-            }}
+            onClick={sendComment}
+            type="submit"
             sx={{ marginLeft: "auto" }}
           >
             <SendRoundedIcon />
           </IconButton>
         </ListItemIcon>
       </ListItem>
-    </>
+    </form>
   );
 }
 

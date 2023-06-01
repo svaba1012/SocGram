@@ -25,7 +25,7 @@ export const setNewCommentAsAnswerComment = (
   };
 };
 
-export const addComment = (postId) => async (dispatch, getState) => {
+export const addComment = (postId, arrayId) => async (dispatch, getState) => {
   let state = getState();
   let user = state.user;
   let creator = user.userId;
@@ -53,5 +53,5 @@ export const addComment = (postId) => async (dispatch, getState) => {
     });
     return;
   }
-  dispatch({ type: ADD_COMMENT, payload: comment });
+  dispatch({ type: ADD_COMMENT, payload: { comment, postArrayId: arrayId } });
 };

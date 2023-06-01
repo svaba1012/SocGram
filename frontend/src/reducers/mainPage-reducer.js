@@ -3,6 +3,7 @@ import {
   GET_POSTS_OF_FOLLOWS,
   LIKE_POST,
   REMOVE_POST_LIKE,
+  ADD_COMMENT,
 } from "../actions/types";
 
 const mainPageReducer = (state = {}, action) => {
@@ -12,6 +13,24 @@ const mainPageReducer = (state = {}, action) => {
       return { ...state };
     case GET_POSTS_OF_FOLLOWS:
       return { ...state, posts: action.payload };
+    case ADD_COMMENT:
+      if (action.payload.postArrayId == null) {
+        return { ...state };
+      }
+      posts = state.posts.map((post, id) => {
+        if (id === action.payload.postArrayId) {
+          if (!post.comments) {
+            post.comments = [];
+          }
+          return {
+            ...post,
+            comments: [...post.comments, action.payload.comment],
+            numOfComments: post.numOfComments + 1,
+          };
+        }
+        return post;
+      });
+      return { ...state, posts };
     case LIKE_POST:
       if (action.payload.postArrayId == null) {
         return { ...state };

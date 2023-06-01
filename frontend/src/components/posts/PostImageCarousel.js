@@ -9,23 +9,31 @@ import CustomTooltip from "../reusables/CustomTooltip";
 import server from "../../config/server";
 import { likePost } from "../../actions/post-actions";
 
+let clickTimeout = null;
+
 function PostImageCarousel({ post, likePost, isLikedByMe }) {
   let [isTaggedVisible, setIsTagVisible] = useState(false);
   let [likeIconStyleClasses, setLikeIconStyleClasses] = useState("like-icon ");
   return (
     <Box
       sx={{ height: "inherit", aspectRatio: "1/1", position: "relative" }}
+      onDoubleClick={() => {
+        if (clickTimeout != null) {
+          clearTimeout(clickTimeout);
+        }
+        setLikeIconStyleClasses("like-icon like-icon-scale");
+        setTimeout(() => {
+          setLikeIconStyleClasses("like-icon ");
+        }, 1005);
+        if (!isLikedByMe) {
+          likePost();
+        }
+      }}
       onClick={(e) => {
-        if (e.detail == 2) {
-          setLikeIconStyleClasses("like-icon like-icon-scale");
-          setTimeout(() => {
-            setLikeIconStyleClasses("like-icon ");
-          }, 1005);
-          if (!isLikedByMe) {
-            likePost();
-          }
-        } else {
-          setIsTagVisible(!isTaggedVisible);
+        if (e.detail == 1) {
+          clickTimeout = setTimeout(() => {
+            setIsTagVisible(!isTaggedVisible);
+          }, 600);
         }
       }}
     >
