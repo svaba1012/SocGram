@@ -15,3 +15,11 @@ jobs:
         with:
           service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
           api-key: ${{ secrets.MY_RENDER_API_KEY }}
+  deploy-front:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy frontend server to production
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.FRONTEND_RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.FRONTEND_RENDER_SERVICE_KEY }}
