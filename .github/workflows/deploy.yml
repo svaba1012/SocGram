@@ -1,0 +1,17 @@
+name: Deploy front and back servers
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  deploy-back:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend server to production
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.MY_RENDER_API_KEY }}
