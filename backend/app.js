@@ -54,8 +54,8 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(process.env.DB_CONNECTION)
   .then(() =>
-    app.listen(5000, "localhost", () => {
-      console.log("Server started on port 5000");
+    app.listen(process.env.PORT || 5000, "localhost", () => {
+      console.log(`Server started on port ${process.env.PORT || 5000}`);
     })
   )
   .catch((err) => console.log(err));
