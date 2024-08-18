@@ -25,4 +25,5 @@
 8. Option modal menu on profile page is unfunctional.
 9. Comments liking isn't implemented.
 10. Adding comments to the list of comments **(fixed)**
-11. ...
+11. Hosted on https://socgram-d8x4.onrender.com/
+12. ...
