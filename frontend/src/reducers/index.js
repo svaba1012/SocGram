@@ -8,6 +8,7 @@ import profileReducer from "./profile-reducer";
 import userReducer from "./user-reducer";
 import userSuggestionsReducer from "./userSuggestions-reducer";
 import taggedUsersReducer from "./tagged-users-reducer";
+import searchedUsersReducer from "./searchUsers-reducer";
 
 const reducers = {
   user: userReducer,
@@ -18,6 +19,7 @@ const reducers = {
   mainPage: mainPageReducer,
   userSuggestions: userSuggestionsReducer,
   taggedUsers: taggedUsersReducer,
+  searchedUsers: searchedUsersReducer,
 };
 
 export default combineReducers(reducers);

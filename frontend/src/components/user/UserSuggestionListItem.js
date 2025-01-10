@@ -11,11 +11,16 @@ import {
 
 import server from "../../config/server";
 
-function UserSuggestionListItem({ suggestion }) {
+function UserSuggestionListItem({
+  suggestion,
+  withFullname = false,
+  withFollowButton = false,
+  onClick,
+}) {
   return (
-    <ListItem sx={{ padding: "0px" }}>
+    <ListItem sx={{ padding: "2px" }} onClick={onClick}>
       <Link
-        to={`/profile/${suggestion.user.username}`}
+        to={`/profile/${suggestion.username}`}
         style={{
           color: "inherit",
           textDecoration: "none",
@@ -24,8 +29,8 @@ function UserSuggestionListItem({ suggestion }) {
         <ListItemAvatar sx={{ minWidth: "40px" }}>
           <Avatar
             sx={{ width: "35px", height: "35px" }}
-            src={`${server.getUri()}/${suggestion.user.profileImage}`}
-            alt={suggestion.user.username.toUpperCase()}
+            src={`${server.getUri()}/${suggestion.profileImage}`}
+            alt={suggestion.username.toUpperCase()}
           ></Avatar>
         </ListItemAvatar>
       </Link>
@@ -38,26 +43,36 @@ function UserSuggestionListItem({ suggestion }) {
               color: "inherit",
               textDecoration: "none",
             }}
-            to={`/profile/${suggestion.user.username}`}
+            to={`/profile/${suggestion.username}`}
           >
-            {suggestion.user.username}
+            {suggestion.username}
           </Link>
         }
         secondary={
           <span style={{ fontSize: "0.8em" }}>
-            {`Followed by ${suggestion.oneFollower.username} ${
-              suggestion.num - 1 > 0 ? `+ ${suggestion.num - 1} more` : ""
+            {`${
+              withFullname
+                ? suggestion.firstName + " " + suggestion.lastName + " ●"
+                : ""
+            } Followed by ${suggestion.oneFollows[0].username} ${
+              suggestion.numOfFollows - 1 > 0
+                ? `+ ${suggestion.numOfFollows - 1} more`
+                : ""
             }`}
           </span>
         }
-        sx={{ marginRight: "40px" }}
+        sx={{ marginRight: "40px", paddingLeft: "5px" }}
       />
-      <ListItemButton
-        color="primary"
-        sx={{ color: "blue", marginLeft: "auto", padding: "0px" }}
-      >
-        Follow
-      </ListItemButton>
+      {withFollowButton ? (
+        <ListItemButton
+          color="primary"
+          sx={{ color: "blue", marginLeft: "auto", padding: "0px" }}
+        >
+          Follow
+        </ListItemButton>
+      ) : (
+        <></>
+      )}
     </ListItem>
   );
 }

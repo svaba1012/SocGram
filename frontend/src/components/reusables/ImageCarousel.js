@@ -23,7 +23,8 @@ function ImageCarousel(props) {
   return (
     <Box
       sx={{
-        aspectRatio: "1/1",
+        // aspectRatio: "1/1",
+        height: "100%",
         position: "relative",
         width: "100%",
       }}
@@ -48,8 +49,8 @@ function ImageCarousel(props) {
             height: "100%",
 
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            // justifyContent: "center",
+            // alignItems: "center",
           }}
         >
           {props.children.map((child, id) => {

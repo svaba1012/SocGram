@@ -11,9 +11,7 @@ function UserMainPage({ userId }) {
       <Box sx={{ flexGrow: 1 }}>
         <PostList userId={userId} />
       </Box>
-      <Box sx={{}}>
-        <UserSuggestions userId={userId} />
-      </Box>
+      <Box sx={{}}>{<UserSuggestions userId={userId} />}</Box>
     </Container>
   );
 }

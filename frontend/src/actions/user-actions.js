@@ -12,6 +12,8 @@ import {
   GET_USER_PROFILES_BY_IDS,
   GET_USER_PROFILE_LOADING,
   REMOVE_PROFILE_IMAGE,
+  SEARCH_FOR_USER,
+  SEARCH_FOR_USER_LOADING,
   SIGN_IN,
   SIGN_UP,
 } from "./types";
@@ -195,18 +197,23 @@ export const followUser = (uid, followedId) => async (dispatch) => {
   dispatch({ type: FOLLOW_USER, payload: res.data.userId });
 };
 
-export const getSuggestionsForUser = (uid) => async (dispatch) => {
+export const getSuggestionsForUser = (userId) => async (dispatch) => {
   dispatch({ type: GET_SUGGESTIONS_FOR_USER_LOADING });
+  // let res = await server.get(`${USER_BASE_ROUTE}`, {
+  //   params: { suggestFor: uid },
+  // });
+
   let res = await server.get(`${USER_BASE_ROUTE}`, {
-    params: { suggestFor: uid },
+    params: { id: userId, notFollowing: false },
   });
 
-  dispatch({ type: GET_SUGGESTIONS_FOR_USER, payload: res.data.suggestions });
+  dispatch({ type: GET_SUGGESTIONS_FOR_USER, payload: res.data.users });
 };
 
-export const searchUsers = async (searchText) => {
+export const searchUsers = (userId, searchText) => async (dispatch) => {
+  dispatch({ type: SEARCH_FOR_USER_LOADING });
   let res = await server.get(`${USER_BASE_ROUTE}`, {
-    params: { search: searchText },
+    params: { search: searchText, id: userId, notFollowing: true },
   });
-  return res.data.users;
+  dispatch({ type: SEARCH_FOR_USER, payload: res.data.users });
 };

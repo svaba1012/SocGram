@@ -52,7 +52,11 @@ function UserSuggestions({ userId, getSuggestionsForUser, suggestions }) {
       </Box>
       <List>
         {suggestions.suggestions.map((suggestion, id) => (
-          <UserSuggestionListItem suggestion={suggestion} key={id} />
+          <UserSuggestionListItem
+            suggestion={suggestion}
+            key={id}
+            withFollowButton={true}
+          />
         ))}
       </List>
     </>

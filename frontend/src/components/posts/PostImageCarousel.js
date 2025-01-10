@@ -16,7 +16,7 @@ function PostImageCarousel({ post, likePost, isLikedByMe }) {
   let [likeIconStyleClasses, setLikeIconStyleClasses] = useState("like-icon ");
   return (
     <Box
-      sx={{ height: "inherit", aspectRatio: "1/1", position: "relative" }}
+      sx={{ height: "inherit", aspectRatio: "5/4", position: "relative" }}
       onDoubleClick={() => {
         if (clickTimeout != null) {
           clearTimeout(clickTimeout);
@@ -76,7 +76,7 @@ function PostImageCarousel({ post, likePost, isLikedByMe }) {
                 );
               })}
             <img
-              style={{ height: "100%" }}
+              style={{ height: "100%", width: "100%" }}
               src={`${server.getUri()}/${url}`}
               alt="Slika"
               key={id}
